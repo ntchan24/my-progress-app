@@ -8,6 +8,9 @@ export type Meal = {
   carbs: number;
   fat: number;
   createdAt: string;
+  mediaUri?: string;
+  mediaType?: 'image' | 'video';
+  caption?: string;
 };
 
 const MEALS_KEY = 'meals';
