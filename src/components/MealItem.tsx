@@ -9,6 +9,7 @@ type MealItemProps = {
   protein: number;
   carbs: number;
   fat: number;
+  createdAt: string;
   onDelete: () => void;
 };
 
@@ -19,6 +20,7 @@ export default function MealItem({
   protein,
   carbs,
   fat,
+  createdAt,
   onDelete,
 }: MealItemProps) {
   const handleLongPress = () => {
@@ -39,6 +41,7 @@ export default function MealItem({
   return (
     <TouchableOpacity style={styles.container} onLongPress={handleLongPress}>
       <Text style={styles.name}>{name}</Text>
+      <Text style = {styles.macros}>{createdAt}</Text>
       <Text style={styles.macros}>
         {calories} cal • {protein}g P • {carbs}g C • {fat}g F
       </Text>

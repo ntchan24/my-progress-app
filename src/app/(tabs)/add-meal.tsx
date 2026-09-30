@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { VideoView } from 'expo-video';
 import { router } from 'expo-router';
+import { VideoView } from 'expo-video';
 import { useState } from 'react';
 import {
   Alert,
