@@ -25,9 +25,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='add-meal'
+        name='add-achievement'
         options={{
-          title: 'Add Meal',
+          title: 'Add Achievement',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name='add-circle' size={size} color={color} />
           ),

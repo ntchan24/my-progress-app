@@ -1,5 +1,5 @@
-import MealReelsCard from '@/components/MealReelsCard';
-import { getMeals, Meal } from '@/storage/meals';
+import AchievementReelsCard from '@/components/AchievementReelsCard';
+import { getAchievements, Achievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
 import { FlashList } from '@shopify/flash-list';
 import { useFocusEffect } from 'expo-router';
@@ -9,18 +9,18 @@ import { Dimensions, StyleSheet, Text, View, ViewToken } from 'react-native';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const [meals, setMeals] = useState<Meal[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const loadMeals = async () => {
-    const data = await getMeals();
-    setMeals(data);
-    console.log('Loaded meals:', data);
+  const loadAchievements = async () => {
+    const data = await getAchievements();
+    setAchievements(data);
+    console.log('Loaded achievements:', data);
   };
 
   useFocusEffect(
     useCallback(() => {
-      loadMeals();
+      loadAchievements();
     }, []),
   );
 
@@ -37,13 +37,13 @@ export default function HomeScreen() {
     itemVisiblePercentThreshold: 50,
   };
 
-  if (meals.length === 0) {
+  if (achievements.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyEmoji}>🍽️</Text>
-        <Text style={styles.emptyTitle}>No meals yet</Text>
+        <Text style={styles.emptyEmoji}>🎉</Text>
+        <Text style={styles.emptyTitle}>No achievements yet</Text>
         <Text style={styles.emptySubtitle}>
-          Add your first meal to get started
+          Add your first achievement to get started
         </Text>
       </View>
     );
@@ -52,12 +52,12 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <FlashList
-        data={meals}
+        data={achievements}
         renderItem={({ item, index }) => (
-          <MealReelsCard
-            meal={item}
+          <AchievementReelsCard
+            achievement={item}
             isActive={index === activeIndex}
-            onDelete={loadMeals}
+            onDelete={loadAchievements}
           />
         )}
         estimatedItemSize={SCREEN_HEIGHT}

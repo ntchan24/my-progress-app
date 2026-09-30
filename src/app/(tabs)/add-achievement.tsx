@@ -1,4 +1,4 @@
-import { addMeal } from '@/storage/meals';
+import { addAchievement } from '@/storage/achievements';
 import { colors, globalStyles } from '@/styles/global';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -17,7 +17,7 @@ import {
   View,
 } from 'react-native';
 
-export default function AddMealScreen() {
+export default function AddAchievementScreen() {
   const [name, setName] = useState('');
   const [calories, setCalories] = useState('');
   const [protein, setProtein] = useState('');
@@ -60,13 +60,13 @@ export default function AddMealScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const handleAddMeal = async () => {
+  const handleAddAchievement = async () => {
     if (!name || !calories) {
-      Alert.alert('Error', 'Please enter a meal name and calories.');
+      Alert.alert('Error', 'Please enter an achievement name and calories.');
       return;
     }
 
-    await addMeal({
+    await addAchievement({
       name,
       calories: Number(calories),
       protein: Number(protein) || 0,
@@ -86,14 +86,14 @@ export default function AddMealScreen() {
     setMediaUri(null);
     setMediaType(null);
 
-    Alert.alert('Success', 'Meal added successfully!');
+    Alert.alert('Success', 'Achievement added successfully!');
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.push('/');
   };
 
   return (
     <ScrollView style={globalStyles.container}>
-      <Text style={globalStyles.title}>Add Meal</Text>
+      <Text style={globalStyles.title}>Add Achievement</Text>
 
       <TouchableOpacity style={styles.mediaButton} onPress={pickMedia}>
         <Ionicons
@@ -128,7 +128,7 @@ export default function AddMealScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder='Meal name'
+        placeholder='Achievement name'
         placeholderTextColor={colors.textSecondary}
         value={name}
         onChangeText={setName}
@@ -180,8 +180,8 @@ export default function AddMealScreen() {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleAddMeal}>
-        <Text style={styles.buttonText}>Add Meal</Text>
+      <TouchableOpacity style={styles.button} onPress={handleAddAchievement}>
+        <Text style={styles.buttonText}>Add Achievement</Text>
       </TouchableOpacity>
 
       <View style={{ height: 40 }} />

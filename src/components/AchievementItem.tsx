@@ -1,8 +1,8 @@
-import { deleteMeal } from '@/storage/meals';
+import { deleteAchievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
 import * as Haptics from 'expo-haptics';
 import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
-type MealItemProps = {
+type AchievementItemProps = {
   id: string;
   name: string;
   calories: number;
@@ -13,7 +13,7 @@ type MealItemProps = {
   onDelete: () => void;
 };
 
-export default function MealItem({
+export default function AchievementItem({
   id,
   name,
   calories,
@@ -22,15 +22,15 @@ export default function MealItem({
   fat,
   createdAt,
   onDelete,
-}: MealItemProps) {
+}: AchievementItemProps) {
   const handleLongPress = () => {
-    Alert.alert('Delete Meal', `Are you sure you want to delete "${name}"?`, [
+    Alert.alert('Delete Achievement', `Are you sure you want to delete "${name}"?`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          await deleteMeal(id);
+          await deleteAchievement(id);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           onDelete();
         },

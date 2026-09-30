@@ -5,7 +5,8 @@ export function useVideoPlayback(
   videoUri: string | undefined,
   isActive: boolean,
 ) {
-  const player = useVideoPlayer(videoUri || '', (player) => {
+  const player = useVideoPlayer(videoUri ?? 'https://placeholder.invalid', (player) => {
+    if (!videoUri) return;
     player.loop = true;
     player.muted = false;
   });

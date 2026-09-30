@@ -1,5 +1,5 @@
 import { useVideoPlayback } from '@/hooks/useVideoPlayback';
-import { deleteMeal, Meal } from '@/storage/meals';
+import { Achievement, deleteAchievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
@@ -13,33 +13,33 @@ import {
   View,
 } from 'react-native';
 
-type MealReelsCardProps = {
-  meal: Meal;
+type AchievementReelsCardProps = {
+  achievement: Achievement;
   isActive: boolean;
   onDelete: () => void;
 };
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export default function MealReelsCard({
-  meal,
+export default function AchievementReelsCard({
+  achievement,
   isActive,
   onDelete,
-}: MealReelsCardProps) {
+}: AchievementReelsCardProps) {
   const player = useVideoPlayback(
-    meal.mediaType === 'video' ? meal.mediaUri : undefined,
+    achievement.mediaType === 'video' ? achievement.mediaUri : undefined,
     isActive,
   );
 
   const handleLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert('Delete Meal', `Are you sure you want to delete "${meal.name}"?`, [
+    Alert.alert('Delete Achievement', `Are you sure you want to delete "${achievement.name}"?`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          await deleteMeal(meal.id);
+          await deleteAchievement(achievement.id);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           onDelete();
         },
@@ -77,11 +77,11 @@ export default function MealReelsCard({
       onLongPress={handleLongPress}
     >
       {/* Background Media */}
-      {meal.mediaUri && meal.mediaType === 'image' && (
-        <Image source={{ uri: meal.mediaUri }} style={styles.backgroundMedia} />
+      {achievement.mediaUri && achievement.mediaType === 'image' && (
+        <Image source={{ uri: achievement.mediaUri }} style={styles.backgroundMedia} />
       )}
 
-      {meal.mediaUri && meal.mediaType === 'video' && (
+      {achievement.mediaUri && achievement.mediaType === 'video' && (
         <VideoView
           style={styles.backgroundMedia}
           player={player}
@@ -91,26 +91,25 @@ export default function MealReelsCard({
       )}
 
       {/* Default Background if no media */}
-      {!meal.mediaUri && (
+      {!achievement.mediaUri && (
         <View style={styles.defaultBackground}>
-          <Text style={styles.defaultBackgroundEmoji}>🍽️</Text>
+          <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
         </View>
       )}
 
-      {/* Gradient Overlay */}
-      <View style={styles.gradient} />
+
 
       {/* Content Overlay */}
       <View style={styles.content}>
-        <Text style={styles.mealName}>{meal.name}</Text>
+        <Text style={styles.achievementName}>{achievement.name}</Text>
 
-        {meal.caption && <Text style={styles.caption}>{meal.caption}</Text>}
+        {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
 
         <Text style={styles.macros}>
-          {meal.calories} cal • {meal.protein}g P • {meal.carbs}g C • {meal.fat}g F
+          {achievement.calories} cal • {achievement.protein}g P • {achievement.carbs}g C • {achievement.fat}g F
         </Text>
 
-        <Text style={styles.timestamp}>{formatDate(meal.createdAt)}</Text>
+        <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
 
         <Text style={styles.hint}>Long press to delete</Text>
       </View>
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
   },
-  mealName: {
+  achievementName: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#fff',
