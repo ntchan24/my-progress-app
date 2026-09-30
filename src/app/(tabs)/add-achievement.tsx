@@ -27,7 +27,57 @@ export default function AddAchievementScreen() {
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
 
-  const pickMedia = async () => {
+  const takePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert(
+        'Camera Permission Required',
+        'Please allow camera access to take photos and videos.',
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      setMediaUri(asset.uri);
+      setMediaType('image');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  const recordVideo = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert(
+        'Camera Permission Required',
+        'Please allow camera access to take photos and videos.',
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['videos'],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      setMediaUri(asset.uri);
+      setMediaType('video');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  const pickFromLibrary = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -52,6 +102,28 @@ export default function AddAchievementScreen() {
       setMediaType(asset.type === 'video' ? 'video' : 'image');
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+  };
+
+  const handleCameraPress = () => {
+    Alert.alert(
+      'Capture Media',
+      'What would you like to do?',
+      [
+        {
+          text: 'Take Photo',
+          onPress: takePhoto,
+        },
+        {
+          text: 'Record Video',
+          onPress: recordVideo,
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const removeMedia = () => {
@@ -95,16 +167,23 @@ export default function AddAchievementScreen() {
     <ScrollView style={globalStyles.container}>
       <Text style={globalStyles.title}>Add Achievement</Text>
 
-      <TouchableOpacity style={styles.mediaButton} onPress={pickMedia}>
-        <Ionicons
-          name='images-outline'
-          size={24}
-          color={colors.primary}
-        />
-        <Text style={styles.mediaButtonText}>
-          {mediaUri ? 'Change Media' : 'Add Photo or Video'}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.mediaButtonsRow}>
+        <TouchableOpacity
+          style={[styles.mediaButton, styles.halfButton]}
+          onPress={handleCameraPress}
+        >
+          <Ionicons name='camera-outline' size={24} color={colors.primary} />
+          <Text style={styles.mediaButtonText}>Take Photo/Video</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.mediaButton, styles.halfButton]}
+          onPress={pickFromLibrary}
+        >
+          <Ionicons name='images-outline' size={24} color={colors.primary} />
+          <Text style={styles.mediaButtonText}>Choose from Library</Text>
+        </TouchableOpacity>
+      </View>
 
       {mediaUri && (
         <View style={styles.mediaPreview}>
@@ -190,6 +269,11 @@ export default function AddAchievementScreen() {
 }
 
 const styles = StyleSheet.create({
+  mediaButtonsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 16,
+  },
   mediaButton: {
     backgroundColor: colors.surface,
     padding: 16,
@@ -198,14 +282,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    marginTop: 16,
     borderWidth: 2,
     borderColor: colors.primary,
     borderStyle: 'dashed',
   },
+  halfButton: {
+    flex: 1,
+  },
   mediaButtonText: {
     color: colors.primary,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
   mediaPreview: {
