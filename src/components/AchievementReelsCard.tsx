@@ -7,9 +7,9 @@ import {
   Dimensions,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 
 type AchievementReelsCardProps = {
   achievement: Achievement;
@@ -24,21 +24,22 @@ export default function AchievementReelsCard({
   isActive,
   onDelete,
 }: AchievementReelsCardProps) {
-
-  const handleLongPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert('Delete Achievement', `Are you sure you want to delete "${achievement.name}"?`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          await deleteAchievement(achievement.id);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          onDelete();
+  const handleLongPress = (event: any) => {
+    if (event.nativeEvent.state === State.ACTIVE) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      Alert.alert('Delete Achievement', `Are you sure you want to delete "${achievement.name}"?`, [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            await deleteAchievement(achievement.id);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            onDelete();
+          },
         },
-      },
-    ]);
+      ]);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -65,37 +66,36 @@ export default function AchievementReelsCard({
   };
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      activeOpacity={1}
-      onLongPress={handleLongPress}
+    <LongPressGestureHandler
+      onHandlerStateChange={handleLongPress}
+      minDurationMs={500}
     >
-      {/* Background Media */}
-      {achievement.media && achievement.media.length > 0 ? (
-        <MediaCarousel media={achievement.media} isActive={isActive} />
-      ) : (
-        <View style={styles.defaultBackground}>
-          <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
+      <View style={styles.container}>
+        {/* Background Media */}
+        {achievement.media && achievement.media.length > 0 ? (
+          <MediaCarousel media={achievement.media} isActive={isActive} />
+        ) : (
+          <View style={styles.defaultBackground}>
+            <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
+          </View>
+        )}
+
+        {/* Content Overlay */}
+        <View style={styles.content} pointerEvents="none">
+          <Text style={styles.achievementName}>{achievement.name}</Text>
+
+          {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
+
+          <Text style={styles.macros}>
+            {achievement.calories} cal • {achievement.protein}g P • {achievement.carbs}g C • {achievement.fat}g F
+          </Text>
+
+          <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
+
+          <Text style={styles.hint}>Long press to delete</Text>
         </View>
-      )}
-
-
-
-      {/* Content Overlay */}
-      <View style={styles.content}>
-        <Text style={styles.achievementName}>{achievement.name}</Text>
-
-        {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
-
-        <Text style={styles.macros}>
-          {achievement.calories} cal • {achievement.protein}g P • {achievement.carbs}g C • {achievement.fat}g F
-        </Text>
-
-        <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
-
-        <Text style={styles.hint}>Long press to delete</Text>
       </View>
-    </TouchableOpacity>
+    </LongPressGestureHandler>
   );
 }
 

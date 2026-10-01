@@ -9,6 +9,7 @@ import { StyleSheet, Text, View, ViewToken } from 'react-native';
 export default function HomeScreen() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(true);
 
   const loadAchievements = async () => {
     const data = await getAchievements();
@@ -19,6 +20,11 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       loadAchievements();
+      setIsFocused(true);
+
+      return () => {
+        setIsFocused(false);
+      };
     }, []),
   );
 
@@ -54,7 +60,7 @@ export default function HomeScreen() {
         renderItem={({ item, index }) => (
           <AchievementReelsCard
             achievement={item}
-            isActive={index === activeIndex}
+            isActive={index === activeIndex && isFocused}
             onDelete={loadAchievements}
           />
         )}

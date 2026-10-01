@@ -1,16 +1,14 @@
 import { MediaItem } from '@/storage/achievements';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { Carousel } from 'react-native-reanimated-carousel';
 
 type MediaCarouselProps = {
   media: MediaItem[];
@@ -27,16 +25,24 @@ function VideoItem({ uri, isActive }: { uri: string; isActive: boolean }) {
   });
 
   useEffect(() => {
-    if (isActive) {
-      player.play();
-    } else {
-      player.pause();
+    try {
+      if (isActive) {
+        player.play();
+      } else {
+        player.pause();
+      }
+    } catch {
+      // Silently ignore - player may have been destroyed
     }
   }, [isActive, player]);
 
   useEffect(() => {
     return () => {
-      player.pause();
+      try {
+        player.pause();
+      } catch {
+        // Silently ignore - player may have been destroyed during cleanup
+      }
     };
   }, [player]);
 
@@ -52,59 +58,32 @@ function VideoItem({ uri, isActive }: { uri: string; isActive: boolean }) {
 
 export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / SCREEN_WIDTH);
-    setCurrentIndex(index);
-  };
+  const renderItem = ({ item, index }: { item: MediaItem; index: number }) => (
+    <View style={styles.mediaContainer}>
+      {item.type === 'image' ? (
+        <Image source={{ uri: item.uri }} style={styles.media} />
+      ) : (
+        <VideoItem
+          uri={item.uri}
+          isActive={isActive && currentIndex === index}
+        />
+      )}
+    </View>
+  );
 
-  // If only one media item, render it without carousel UI
-  if (media.length === 1) {
-    const item = media[0];
-    return (
-      <View style={styles.singleMediaContainer}>
-        {item.type === 'image' ? (
-          <Image source={{ uri: item.uri }} style={styles.media} />
-        ) : (
-          <VideoItem uri={item.uri} isActive={isActive} />
-        )}
-      </View>
-    );
-  }
-
-  // Render carousel for multiple items
   return (
     <View style={styles.carouselContainer}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
+      <Carousel
+        width={SCREEN_WIDTH}
+        height="100%"
+        data={media}
+        renderItem={renderItem}
+        onSnapToItem={(index) => setCurrentIndex(index)}
         pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        style={styles.scrollView}
-        directionalLockEnabled={true}
-        snapToInterval={SCREEN_WIDTH}
-        snapToAlignment="center"
-        decelerationRate="fast"
-        disableIntervalMomentum={true}
-        nestedScrollEnabled={true}
-      >
-        {media.map((item, index) => (
-          <View key={index} style={styles.mediaContainer}>
-            {item.type === 'image' ? (
-              <Image source={{ uri: item.uri }} style={styles.media} />
-            ) : (
-              <VideoItem
-                uri={item.uri}
-                isActive={isActive && currentIndex === index}
-              />
-            )}
-          </View>
-        ))}
-      </ScrollView>
+        loop={false}
+        enabled={true}
+      />
 
       {/* Counter Badge */}
       <View style={styles.counterBadge}>
@@ -130,15 +109,6 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
 }
 
 const styles = StyleSheet.create({
-  singleMediaContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-  },
   carouselContainer: {
     position: 'absolute',
     top: 0,
@@ -147,9 +117,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: '100%',
-  },
-  scrollView: {
-    flex: 1,
   },
   mediaContainer: {
     width: SCREEN_WIDTH,
