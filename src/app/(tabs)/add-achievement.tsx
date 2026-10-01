@@ -1,11 +1,10 @@
-import { addAchievement } from '@/storage/achievements';
+import { addAchievement, MediaItem } from '@/storage/achievements';
 import { colors, globalStyles } from '@/styles/global';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { VideoView } from 'expo-video';
 import { useState } from 'react';
 import {
   Alert,
@@ -24,10 +23,14 @@ export default function AddAchievementScreen() {
   const [carbs, setCarbs] = useState('');
   const [fat, setFat] = useState('');
   const [caption, setCaption] = useState('');
-  const [mediaUri, setMediaUri] = useState<string | null>(null);
-  const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
+  const [media, setMedia] = useState<MediaItem[]>([]);
 
   const takePhoto = async () => {
+    if (media.length >= 20) {
+      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+      return;
+    }
+
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (!permissionResult.granted) {
@@ -46,13 +49,27 @@ export default function AddAchievementScreen() {
 
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
-      setMediaUri(asset.uri);
-      setMediaType('image');
+      setMedia([...media, { uri: asset.uri, type: 'image' }]);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+      // Ask if user wants to add more
+      Alert.alert(
+        'Photo Added',
+        'Would you like to add another photo?',
+        [
+          { text: 'Done', style: 'cancel' },
+          { text: 'Add Another', onPress: takePhoto },
+        ]
+      );
     }
   };
 
   const recordVideo = async () => {
+    if (media.length >= 20) {
+      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+      return;
+    }
+
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (!permissionResult.granted) {
@@ -71,13 +88,27 @@ export default function AddAchievementScreen() {
 
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
-      setMediaUri(asset.uri);
-      setMediaType('video');
+      setMedia([...media, { uri: asset.uri, type: 'video' }]);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+      // Ask if user wants to add more
+      Alert.alert(
+        'Video Added',
+        'Would you like to add another video?',
+        [
+          { text: 'Done', style: 'cancel' },
+          { text: 'Add Another', onPress: recordVideo },
+        ]
+      );
     }
   };
 
   const pickFromLibrary = async () => {
+    if (media.length >= 20) {
+      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+      return;
+    }
+
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -91,15 +122,25 @@ export default function AddAchievementScreen() {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images', 'videos'],
-      allowsEditing: true,
+      allowsMultipleSelection: true,
       quality: 1,
       videoMaxDuration: 60,
+      selectionLimit: 20 - media.length, // Limit based on current count
     });
 
-    if (!result.canceled && result.assets[0]) {
-      const asset = result.assets[0];
-      setMediaUri(asset.uri);
-      setMediaType(asset.type === 'video' ? 'video' : 'image');
+    if (!result.canceled && result.assets.length > 0) {
+      const newMedia: MediaItem[] = result.assets.map(asset => ({
+        uri: asset.uri,
+        type: asset.type === 'video' ? 'video' : 'image',
+      }));
+
+      const totalCount = media.length + newMedia.length;
+      if (totalCount > 20) {
+        Alert.alert('Limit Reached', 'You can only add up to 20 media items total.');
+        return;
+      }
+
+      setMedia([...media, ...newMedia]);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
@@ -126,9 +167,8 @@ export default function AddAchievementScreen() {
     );
   };
 
-  const removeMedia = () => {
-    setMediaUri(null);
-    setMediaType(null);
+  const removeMedia = (index: number) => {
+    setMedia(media.filter((_, i) => i !== index));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
@@ -145,8 +185,7 @@ export default function AddAchievementScreen() {
       carbs: Number(carbs) || 0,
       fat: Number(fat) || 0,
       caption: caption || undefined,
-      mediaUri: mediaUri || undefined,
-      mediaType: mediaType || undefined,
+      media: media.length > 0 ? media : undefined,
     });
 
     setName('');
@@ -155,8 +194,7 @@ export default function AddAchievementScreen() {
     setCarbs('');
     setFat('');
     setCaption('');
-    setMediaUri(null);
-    setMediaType(null);
+    setMedia([]);
 
     Alert.alert('Success', 'Achievement added successfully!');
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -185,23 +223,35 @@ export default function AddAchievementScreen() {
         </TouchableOpacity>
       </View>
 
-      {mediaUri && (
-        <View style={styles.mediaPreview}>
-          {mediaType === 'image' ? (
-            <Image source={{ uri: mediaUri }} style={styles.previewMedia} />
-          ) : (
-            <VideoView
-              style={styles.previewMedia}
-              player={{ src: mediaUri }}
-              nativeControls
-            />
-          )}
-          <TouchableOpacity
-            style={styles.removeMediaButton}
-            onPress={removeMedia}
+      {media.length > 0 && (
+        <View style={styles.mediaThumbnailsContainer}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.mediaThumbnailsScroll}
           >
-            <Ionicons name='close-circle' size={32} color={colors.alert} />
-          </TouchableOpacity>
+            {media.map((item, index) => (
+              <View key={index} style={styles.mediaThumbnailWrapper}>
+                {item.type === 'image' ? (
+                  <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
+                ) : (
+                  <View style={styles.mediaThumbnail}>
+                    <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
+                    <View style={styles.videoIndicator}>
+                      <Ionicons name='play-circle' size={24} color='#fff' />
+                    </View>
+                  </View>
+                )}
+                <TouchableOpacity
+                  style={styles.removeThumbnailButton}
+                  onPress={() => removeMedia(index)}
+                >
+                  <Ionicons name='close-circle' size={24} color={colors.alert} />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+          <Text style={styles.mediaCount}>{media.length}/20 media items</Text>
         </View>
       )}
 
@@ -294,24 +344,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  mediaPreview: {
+  mediaThumbnailsContainer: {
     marginTop: 16,
-    borderRadius: 10,
-    overflow: 'hidden',
-    backgroundColor: colors.surface,
+  },
+  mediaThumbnailsScroll: {
+    flexDirection: 'row',
+  },
+  mediaThumbnailWrapper: {
+    marginRight: 10,
     position: 'relative',
   },
-  previewMedia: {
-    width: '100%',
-    height: 250,
+  mediaThumbnail: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: colors.surface,
+  },
+  videoIndicator: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 10,
   },
-  removeMediaButton: {
+  removeThumbnailButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 16,
+    top: -8,
+    right: -8,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    borderRadius: 12,
+  },
+  mediaCount: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 8,
+    textAlign: 'right',
   },
   input: {
     backgroundColor: colors.surface,

@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export type MediaItem = {
+  uri: string;
+  type: 'image' | 'video';
+};
+
 export type Achievement = {
   id: string;
   name: string;
@@ -8,16 +13,29 @@ export type Achievement = {
   carbs: number;
   fat: number;
   createdAt: string;
+  media?: MediaItem[];
+  caption?: string;
+  // Deprecated fields for backward compatibility
   mediaUri?: string;
   mediaType?: 'image' | 'video';
-  caption?: string;
 };
 
 const ACHIEVEMENTS_KEY = 'achievements';
 
 export const getAchievements = async (): Promise<Achievement[]> => {
   const data = await AsyncStorage.getItem(ACHIEVEMENTS_KEY);
-  return data ? JSON.parse(data) : [];
+  const achievements: Achievement[] = data ? JSON.parse(data) : [];
+
+  // Migrate old format to new format
+  return achievements.map(achievement => {
+    if (achievement.mediaUri && achievement.mediaType && !achievement.media) {
+      return {
+        ...achievement,
+        media: [{ uri: achievement.mediaUri, type: achievement.mediaType }],
+      };
+    }
+    return achievement;
+  });
 };
 
 export const addAchievement = async (

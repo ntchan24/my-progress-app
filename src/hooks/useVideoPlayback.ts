@@ -1,4 +1,4 @@
-import { VideoPlayer, useVideoPlayer } from 'expo-video';
+import { useVideoPlayer } from 'expo-video';
 import { useEffect, useRef } from 'react';
 
 export function useVideoPlayback(

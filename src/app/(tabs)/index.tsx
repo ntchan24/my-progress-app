@@ -4,9 +4,7 @@ import { colors } from '@/styles/global';
 import { FlashList } from '@shopify/flash-list';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View, ViewToken } from 'react-native';
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+import { StyleSheet, Text, View, ViewToken } from 'react-native';
 
 export default function HomeScreen() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -60,13 +58,9 @@ export default function HomeScreen() {
             onDelete={loadAchievements}
           />
         )}
-        estimatedItemSize={SCREEN_HEIGHT}
         pagingEnabled
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        snapToInterval={SCREEN_HEIGHT}
-        snapToAlignment='start'
-        decelerationRate='fast'
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
       />

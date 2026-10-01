@@ -1,9 +1,7 @@
-import { useVideoPlayback } from '@/hooks/useVideoPlayback';
+import MediaCarousel from '@/components/MediaCarousel';
 import { Achievement, deleteAchievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
 import * as Haptics from 'expo-haptics';
-import { Image } from 'expo-image';
-import { VideoView } from 'expo-video';
 import {
   Alert,
   Dimensions,
@@ -26,10 +24,6 @@ export default function AchievementReelsCard({
   isActive,
   onDelete,
 }: AchievementReelsCardProps) {
-  const player = useVideoPlayback(
-    achievement.mediaType === 'video' ? achievement.mediaUri : undefined,
-    isActive,
-  );
 
   const handleLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -77,21 +71,9 @@ export default function AchievementReelsCard({
       onLongPress={handleLongPress}
     >
       {/* Background Media */}
-      {achievement.mediaUri && achievement.mediaType === 'image' && (
-        <Image source={{ uri: achievement.mediaUri }} style={styles.backgroundMedia} />
-      )}
-
-      {achievement.mediaUri && achievement.mediaType === 'video' && (
-        <VideoView
-          style={styles.backgroundMedia}
-          player={player}
-          nativeControls={false}
-          contentFit='cover'
-        />
-      )}
-
-      {/* Default Background if no media */}
-      {!achievement.mediaUri && (
+      {achievement.media && achievement.media.length > 0 ? (
+        <MediaCarousel media={achievement.media} isActive={isActive} />
+      ) : (
         <View style={styles.defaultBackground}>
           <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
         </View>
@@ -124,15 +106,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     position: 'relative',
   },
-  backgroundMedia: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-  },
   defaultBackground: {
     position: 'absolute',
     top: 0,
@@ -146,14 +119,6 @@ const styles = StyleSheet.create({
   defaultBackgroundEmoji: {
     fontSize: 120,
     opacity: 0.3,
-  },
-  gradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '60%',
-    backgroundColor: 'rgba(0,0,0,0.6)',
   },
   content: {
     position: 'absolute',
