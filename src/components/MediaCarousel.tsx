@@ -1,14 +1,16 @@
 import { MediaItem } from '@/storage/achievements';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { Carousel } from 'react-native-reanimated-carousel';
 
 type MediaCarouselProps = {
   media: MediaItem[];
@@ -58,42 +60,64 @@ function VideoItem({ uri, isActive }: { uri: string; isActive: boolean }) {
 
 export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
 
-  const renderItem = ({ item, index }: { item: MediaItem; index: number }) => (
-    <View style={styles.mediaContainer}>
-      {item.type === 'image' ? (
-        <Image source={{ uri: item.uri }} style={styles.media} />
-      ) : (
-        <VideoItem
-          uri={item.uri}
-          isActive={isActive && currentIndex === index}
-        />
-      )}
-    </View>
-  );
+  // If only one media item, render directly without carousel
+  if (media.length === 1) {
+    const item = media[0];
+    return (
+      <View style={styles.carouselContainer}>
+        {item.type === 'image' ? (
+          <Image source={{ uri: item.uri }} style={styles.media} />
+        ) : (
+          <VideoItem uri={item.uri} isActive={isActive} />
+        )}
+      </View>
+    );
+  }
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / SCREEN_WIDTH);
+    if (index !== currentIndex) {
+      setCurrentIndex(index);
+    }
+  };
 
   return (
     <View style={styles.carouselContainer}>
-      <Carousel
-        width={SCREEN_WIDTH}
-        height="100%"
-        data={media}
-        renderItem={renderItem}
-        onSnapToItem={(index) => setCurrentIndex(index)}
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal
         pagingEnabled
-        loop={false}
-        enabled={true}
-      />
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        style={styles.scrollView}
+      >
+        {media.map((item, index) => (
+          <View key={index} style={styles.mediaContainer}>
+            {item.type === 'image' ? (
+              <Image source={{ uri: item.uri }} style={styles.media} />
+            ) : (
+              <VideoItem
+                uri={item.uri}
+                isActive={isActive && currentIndex === index}
+              />
+            )}
+          </View>
+        ))}
+      </ScrollView>
 
       {/* Counter Badge */}
-      <View style={styles.counterBadge}>
+      <View style={styles.counterBadge} pointerEvents="none">
         <Text style={styles.counterText}>
           {currentIndex + 1}/{media.length}
         </Text>
       </View>
 
       {/* Pagination Dots */}
-      <View style={styles.dotsContainer}>
+      <View style={styles.dotsContainer} pointerEvents="none">
         {media.map((_, index) => (
           <View
             key={index}
@@ -117,6 +141,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: '100%',
+  },
+  scrollView: {
+    flex: 1,
   },
   mediaContainer: {
     width: SCREEN_WIDTH,

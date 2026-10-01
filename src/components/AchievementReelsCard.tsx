@@ -1,20 +1,16 @@
 import MediaCarousel from '@/components/MediaCarousel';
-import { Achievement, deleteAchievement } from '@/storage/achievements';
+import { Achievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
-import * as Haptics from 'expo-haptics';
 import {
-  Alert,
   Dimensions,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 
 type AchievementReelsCardProps = {
   achievement: Achievement;
   isActive: boolean;
-  onDelete: () => void;
 };
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -22,25 +18,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 export default function AchievementReelsCard({
   achievement,
   isActive,
-  onDelete,
 }: AchievementReelsCardProps) {
-  const handleLongPress = (event: any) => {
-    if (event.nativeEvent.state === State.ACTIVE) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      Alert.alert('Delete Achievement', `Are you sure you want to delete "${achievement.name}"?`, [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            await deleteAchievement(achievement.id);
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            onDelete();
-          },
-        },
-      ]);
-    }
-  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -66,36 +44,29 @@ export default function AchievementReelsCard({
   };
 
   return (
-    <LongPressGestureHandler
-      onHandlerStateChange={handleLongPress}
-      minDurationMs={500}
-    >
-      <View style={styles.container}>
-        {/* Background Media */}
-        {achievement.media && achievement.media.length > 0 ? (
-          <MediaCarousel media={achievement.media} isActive={isActive} />
-        ) : (
-          <View style={styles.defaultBackground}>
-            <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
-          </View>
-        )}
-
-        {/* Content Overlay */}
-        <View style={styles.content} pointerEvents="none">
-          <Text style={styles.achievementName}>{achievement.name}</Text>
-
-          {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
-
-          <Text style={styles.macros}>
-            {achievement.calories} cal • {achievement.protein}g P • {achievement.carbs}g C • {achievement.fat}g F
-          </Text>
-
-          <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
-
-          <Text style={styles.hint}>Long press to delete</Text>
+    <View style={styles.container}>
+      {/* Background Media */}
+      {achievement.media && achievement.media.length > 0 ? (
+        <MediaCarousel media={achievement.media} isActive={isActive} />
+      ) : (
+        <View style={styles.defaultBackground}>
+          <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
         </View>
+      )}
+
+      {/* Content Overlay */}
+      <View style={styles.content} pointerEvents="none">
+        <Text style={styles.achievementName}>{achievement.name}</Text>
+
+        {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
+
+        <Text style={styles.macros}>
+          {achievement.calories} cal • {achievement.protein}g P • {achievement.carbs}g C • {achievement.fat}g F
+        </Text>
+
+        <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
       </View>
-    </LongPressGestureHandler>
+    </View>
   );
 }
 
@@ -155,15 +126,6 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 12,
     color: 'rgba(255, 255, 255, 0.7)',
-    marginBottom: 20,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 6,
-  },
-  hint: {
-    fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontStyle: 'italic',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,

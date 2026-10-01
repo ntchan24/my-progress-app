@@ -1,10 +1,11 @@
 import AchievementReelsCard from '@/components/AchievementReelsCard';
 import { getAchievements, Achievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
-import { FlashList } from '@shopify/flash-list';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, Text, View, ViewToken } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, View, ViewToken } from 'react-native';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -55,16 +56,18 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <FlashList
+      <FlatList
         data={achievements}
         renderItem={({ item, index }) => (
           <AchievementReelsCard
             achievement={item}
             isActive={index === activeIndex && isFocused}
-            onDelete={loadAchievements}
           />
         )}
         pagingEnabled
+        snapToInterval={SCREEN_HEIGHT}
+        snapToAlignment="start"
+        decelerationRate="fast"
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChanged}
