@@ -1,16 +1,23 @@
 import MediaCarousel from '@/components/MediaCarousel';
 import { Achievement } from '@/storage/achievements';
 import { colors } from '@/styles/global';
+import { Ionicons } from '@expo/vector-icons';
 import {
+  ActionSheetIOS,
+  Alert,
   Dimensions,
+  Platform,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type AchievementReelsCardProps = {
   achievement: Achievement;
   isActive: boolean;
+  onDelete: (id: string) => void;
 };
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -18,7 +25,36 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 export default function AchievementReelsCard({
   achievement,
   isActive,
+  onDelete,
 }: AchievementReelsCardProps) {
+  const insets = useSafeAreaInsets();
+
+  const confirmDelete = () => {
+    Alert.alert('Delete this moment?', "This can't be undone.", [
+      { text: 'Keep it', style: 'cancel' },
+      { text: 'Delete', style: 'destructive', onPress: () => onDelete(achievement.id) },
+    ]);
+  };
+
+  const handleOptions = () => {
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['Delete achievement', 'Cancel'],
+          destructiveButtonIndex: 0,
+          cancelButtonIndex: 1,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 0) confirmDelete();
+        },
+      );
+    } else {
+      Alert.alert('Achievement options', undefined, [
+        { text: 'Delete achievement', style: 'destructive', onPress: confirmDelete },
+        { text: 'Cancel', style: 'cancel' },
+      ]);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -56,16 +92,23 @@ export default function AchievementReelsCard({
 
       {/* Content Overlay */}
       <View style={styles.content} pointerEvents="none">
-        <Text style={styles.achievementName}>{achievement.name}</Text>
+        {achievement.name ? (
+          <Text style={styles.achievementName}>{achievement.name}</Text>
+        ) : null}
 
         {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
 
-        <Text style={styles.macros}>
-          {achievement.calories} cal • {achievement.protein}g P • {achievement.carbs}g C • {achievement.fat}g F
-        </Text>
-
         <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
       </View>
+
+      {/* Options Button */}
+      <TouchableOpacity
+        style={[styles.optionsButton, { top: insets.top + 12 }]}
+        onPress={handleOptions}
+        accessibilityLabel='Achievement options'
+      >
+        <Ionicons name='ellipsis-horizontal' size={24} color='#fff' />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -115,13 +158,15 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 8,
   },
-  macros: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginBottom: 6,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 6,
+  optionsButton: {
+    position: 'absolute',
+    right: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   timestamp: {
     fontSize: 12,

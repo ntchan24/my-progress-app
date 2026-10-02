@@ -18,10 +18,6 @@ import {
 
 export default function AddAchievementScreen() {
   const [name, setName] = useState('');
-  const [calories, setCalories] = useState('');
-  const [protein, setProtein] = useState('');
-  const [carbs, setCarbs] = useState('');
-  const [fat, setFat] = useState('');
   const [caption, setCaption] = useState('');
   const [media, setMedia] = useState<MediaItem[]>([]);
 
@@ -173,26 +169,18 @@ export default function AddAchievementScreen() {
   };
 
   const handleAddAchievement = async () => {
-    if (!name || !calories) {
-      Alert.alert('Error', 'Please enter an achievement name and calories.');
+    if (!name) {
+      Alert.alert('Error', 'Please enter an achievement name.');
       return;
     }
 
     await addAchievement({
       name,
-      calories: Number(calories),
-      protein: Number(protein) || 0,
-      carbs: Number(carbs) || 0,
-      fat: Number(fat) || 0,
       caption: caption || undefined,
       media: media.length > 0 ? media : undefined,
     });
 
     setName('');
-    setCalories('');
-    setProtein('');
-    setCarbs('');
-    setFat('');
     setCaption('');
     setMedia([]);
 
@@ -272,42 +260,6 @@ export default function AddAchievementScreen() {
         multiline
         numberOfLines={3}
       />
-
-      <TextInput
-        style={styles.input}
-        placeholder='Calories'
-        placeholderTextColor={colors.textSecondary}
-        keyboardType='numeric'
-        value={calories}
-        onChangeText={setCalories}
-      />
-
-      <View style={styles.row}>
-        <TextInput
-          style={[styles.input, styles.rowInput]}
-          placeholder='Protein (g)'
-          placeholderTextColor={colors.textSecondary}
-          keyboardType='numeric'
-          value={protein}
-          onChangeText={setProtein}
-        />
-        <TextInput
-          style={[styles.input, styles.rowInput]}
-          placeholder='Carbs (g)'
-          placeholderTextColor={colors.textSecondary}
-          keyboardType='numeric'
-          value={carbs}
-          onChangeText={setCarbs}
-        />
-        <TextInput
-          style={[styles.input, styles.rowInput]}
-          placeholder='Fat (g)'
-          placeholderTextColor={colors.textSecondary}
-          keyboardType='numeric'
-          value={fat}
-          onChangeText={setFat}
-        />
-      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleAddAchievement}>
         <Text style={styles.buttonText}>Add Achievement</Text>
@@ -395,13 +347,6 @@ const styles = StyleSheet.create({
   captionInput: {
     minHeight: 80,
     textAlignVertical: 'top',
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  rowInput: {
-    flex: 1,
   },
   button: {
     backgroundColor: colors.primary,

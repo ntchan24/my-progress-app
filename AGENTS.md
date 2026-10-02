@@ -152,8 +152,8 @@ Do not use any third-party push notification service in this version.
 Notification copy should feel like a warm invitation, not a reminder or alert.
 
 ## Media
-Use Expo ImagePicker and Expo AV for media capture.
-Store media locally using the device filesystem (Expo FileSystem).
+
+Store media locally using the device filesystem 
 Do not upload media to any server in this version.
 
 ## Styling Rules
