@@ -12,6 +12,8 @@ export type Achievement = {
   name?: string;
   caption?: string;
   createdAt: string;
+  // Undefined until the achievement has been shown in the feed
+  lastSeenAt?: string;
   media?: MediaItem[];
 };
 
@@ -20,6 +22,7 @@ type AchievementRow = {
   name: string | null;
   caption: string | null;
   created_at: string;
+  last_seen_at: string | null;
 };
 
 type MediaRow = {
@@ -30,7 +33,7 @@ type MediaRow = {
 
 export const getAchievements = async (): Promise<Achievement[]> => {
   const rows = await db.getAllAsync<AchievementRow>(
-    'SELECT id, name, caption, created_at FROM achievements ORDER BY created_at DESC',
+    'SELECT id, name, caption, created_at, last_seen_at FROM achievements ORDER BY created_at DESC',
   );
   const mediaRows = await db.getAllAsync<MediaRow>(
     'SELECT achievement_id, file_name, type FROM achievement_media ORDER BY achievement_id, position',
@@ -49,8 +52,17 @@ export const getAchievements = async (): Promise<Achievement[]> => {
     name: row.name ?? undefined,
     caption: row.caption ?? undefined,
     createdAt: row.created_at,
+    lastSeenAt: row.last_seen_at ?? undefined,
     media: mediaByAchievement.get(row.id),
   }));
+};
+
+export const markAchievementSeen = async (id: string): Promise<void> => {
+  await db.runAsync(
+    'UPDATE achievements SET last_seen_at = ? WHERE id = ?',
+    new Date().toISOString(),
+    id,
+  );
 };
 
 export const addAchievement = async (

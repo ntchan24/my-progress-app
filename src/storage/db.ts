@@ -43,6 +43,14 @@ export const initDatabase = async () => {
     `);
   }
 
+  if (version < 2) {
+    // Tracks when each achievement was last shown, so the feed can surface ones not seen in a while
+    await db.execAsync(`
+      ALTER TABLE achievements ADD COLUMN last_seen_at TEXT;
+      PRAGMA user_version = 2;
+    `);
+  }
+
   await migrateFromAsyncStorage();
 };
 
