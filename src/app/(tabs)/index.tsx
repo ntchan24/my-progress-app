@@ -11,7 +11,7 @@ import { FeedItem, nextRound, orderFeed, toFeedItems } from '@/utils/feedOrder';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
-import { useFocusEffect } from 'expo-router';
+import { Redirect, useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import {
   Alert,
@@ -27,6 +27,9 @@ import {
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  // TEMP: send the app straight to onboarding while testing it. Remove this line when done.
+  return <Redirect href="/hero" />;
+
   // Source list from the database
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   // What the list renders: the first round, followed by reshuffled rounds as the user scrolls

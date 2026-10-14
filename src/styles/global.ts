@@ -22,6 +22,11 @@ export const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.text,
   },
+  input: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
