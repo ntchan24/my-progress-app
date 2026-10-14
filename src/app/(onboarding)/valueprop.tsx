@@ -4,7 +4,7 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import { Text } from "react-native-gesture-handler";
 
 
-export default function science (){
+export default function ValuePropScreen(){
     return (
         <ScrollView style={globalStyles.container}>
 

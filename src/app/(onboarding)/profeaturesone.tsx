@@ -2,7 +2,7 @@ import { colors, globalStyles } from "@/styles/global";
 import { Link } from "expo-router";
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 
-export default function profeaturesone (){
+export default function ProFeaturesOneScreen(){
     return (
         <ScrollView style={globalStyles.container}>
         

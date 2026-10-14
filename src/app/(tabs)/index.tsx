@@ -6,12 +6,13 @@ import {
   markAchievementSeen,
   Achievement,
 } from '@/storage/achievements';
+import { useOnboardingStore } from '@/store/onboarding';
 import { colors } from '@/styles/global';
 import { FeedItem, nextRound, orderFeed, toFeedItems } from '@/utils/feedOrder';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
-import { Redirect, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import {
   Alert,
@@ -27,9 +28,7 @@ import {
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  // TEMP: send the app straight to onboarding while testing it. Remove this line when done.
-  return <Redirect href="/hero" />;
-
+  const resetOnboarding = useOnboardingStore((s) => s.resetOnboarding);
   // Source list from the database
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   // What the list renders: the first round, followed by reshuffled rounds as the user scrolls
@@ -122,6 +121,13 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
+  // TEMP (dev only): sends you back through onboarding. Remove when done testing it.
+  const devResetButton = __DEV__ ? (
+    <TouchableOpacity style={styles.devResetButton} onPress={resetOnboarding}>
+      <Text style={styles.devResetText}>Reset onboarding</Text>
+    </TouchableOpacity>
+  ) : null;
+
   useFocusEffect(
     useCallback(() => {
       loadAchievements();
@@ -161,6 +167,7 @@ export default function HomeScreen() {
           </Text>
         </View>
         {quickAddButton}
+        {devResetButton}
       </View>
     );
   }
@@ -194,6 +201,7 @@ export default function HomeScreen() {
         onEndReachedThreshold={2}
       />
       {quickAddButton}
+      {devResetButton}
     </View>
   );
 }
@@ -239,5 +247,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+  },
+  devResetButton: {
+    position: 'absolute',
+    top: 60,
+    left: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: colors.surface,
+  },
+  devResetText: {
+    fontSize: 12,
+    color: colors.textSecondary,
   },
 });
