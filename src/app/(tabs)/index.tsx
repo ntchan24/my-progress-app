@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   devResetButton: {
     position: 'absolute',
     top: 60,
-    left: 16,
+    right: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 999,

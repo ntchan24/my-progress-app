@@ -191,7 +191,7 @@ export default function AddAchievementScreen() {
 
   return (
     <ScrollView style={globalStyles.container}>
-      <Text style={globalStyles.title}>Add Achievement</Text>
+      <Text style={[globalStyles.title, styles.title]}>Add Achievement</Text>
 
       <View style={styles.mediaButtonsRow}>
         <TouchableOpacity
@@ -271,6 +271,10 @@ export default function AddAchievementScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Leaves room for the floating menu button in the top-left corner
+  title: {
+    marginLeft: 52,
+  },
   mediaButtonsRow: {
     flexDirection: 'row',
     gap: 10,

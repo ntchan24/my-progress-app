@@ -1,5 +1,6 @@
 import { initDatabase } from '@/storage/db';
 import { useOnboardingStore } from '@/store/onboarding';
+import { colors } from '@/styles/global';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -36,6 +37,16 @@ export default function RootLayout() {
 
         <Stack.Protected guard = {hasCompletedOnboarding}>
         <Stack.Screen name='(tabs)' />
+        <Stack.Screen
+          name='settings'
+          options={{
+            headerShown: true,
+            title: 'Settings',
+            headerStyle: { backgroundColor: colors.background },
+            headerTintColor: colors.text,
+          }}
+        />
+        <Stack.Screen name='paywall' options={{ presentation: 'modal' }} />
         </Stack.Protected>
 
       </Stack>
