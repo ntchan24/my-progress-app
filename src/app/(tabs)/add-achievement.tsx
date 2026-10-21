@@ -9,10 +9,10 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import {
   Alert,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -170,7 +170,7 @@ export default function AddAchievementScreen() {
 
   const handleAddAchievement = async () => {
     if (!name) {
-      Alert.alert('Error', 'Please enter an achievement name.');
+      Alert.alert('Almost there', 'Give your win a name first.');
       return;
     }
 
@@ -184,7 +184,7 @@ export default function AddAchievementScreen() {
     setCaption('');
     setMedia([]);
 
-    Alert.alert('Success', 'Achievement added successfully!');
+    Alert.alert('Win saved', 'Nice work. It’s in your feed now.');
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.push('/');
   };
@@ -192,50 +192,53 @@ export default function AddAchievementScreen() {
   return (
     <ScrollView className='screen'>
       {/* Left margin leaves room for the floating menu button */}
-      <Text className='screen__title ml-[52px]'>Add Achievement</Text>
+      <Text className='screen__title ml-[52px] mt-1.5'>New win</Text>
+      <Text className='screen__subtitle'>Big or small, it counts.</Text>
 
-      <View className='flex-row gap-2.5 mt-4'>
-        <TouchableOpacity
-          className='btn-dashed flex-1 mt-0'
-          onPress={handleCameraPress}
-        >
-          <Ionicons name='camera-outline' size={24} color={colors.primary} />
-          <Text className='btn-dashed__label'>Take Photo/Video</Text>
-        </TouchableOpacity>
+      <View className='flex-row gap-3 mt-6'>
+        <Pressable className='btn-tonal flex-1' onPress={handleCameraPress}>
+          <Ionicons name='camera-outline' size={20} color={colors.textPrimary} />
+          <Text className='btn-tonal__label'>Camera</Text>
+        </Pressable>
 
-        <TouchableOpacity
-          className='btn-dashed flex-1 mt-0'
-          onPress={pickFromLibrary}
-        >
-          <Ionicons name='images-outline' size={24} color={colors.primary} />
-          <Text className='btn-dashed__label'>Choose from Library</Text>
-        </TouchableOpacity>
+        <Pressable className='btn-tonal flex-1' onPress={pickFromLibrary}>
+          <Ionicons name='images-outline' size={20} color={colors.textPrimary} />
+          <Text className='btn-tonal__label'>Library</Text>
+        </Pressable>
       </View>
 
       <MediaThumbnails media={media} onRemove={removeMedia} />
 
-      <TextInput
-        className='input'
-        placeholder='Achievement name'
-        placeholderTextColor={colors.textSecondary}
-        value={name}
-        onChangeText={setName}
-      />
+      <View className='field'>
+        <Text className='field__label'>Name</Text>
+        <TextInput
+          className='input'
+          placeholder='What did you do?'
+          placeholderTextColor={colors.textTertiary}
+          selectionColor={colors.textPrimary}
+          value={name}
+          onChangeText={setName}
+        />
+      </View>
 
-      <TextInput
-        className='input min-h-20'
-        textAlignVertical='top'
-        placeholder='Add a caption or note (optional)'
-        placeholderTextColor={colors.textSecondary}
-        value={caption}
-        onChangeText={setCaption}
-        multiline
-        numberOfLines={3}
-      />
+      <View className='field'>
+        <Text className='field__label'>Note</Text>
+        <TextInput
+          className='input input--multiline'
+          textAlignVertical='top'
+          placeholder='How did it feel? (optional)'
+          placeholderTextColor={colors.textTertiary}
+          selectionColor={colors.textPrimary}
+          value={caption}
+          onChangeText={setCaption}
+          multiline
+          numberOfLines={3}
+        />
+      </View>
 
-      <TouchableOpacity className='btn-primary rounded-[10px] mt-6' onPress={handleAddAchievement}>
-        <Text className='text-background text-base font-bold'>Add Achievement</Text>
-      </TouchableOpacity>
+      <Pressable className='btn-primary mt-8' onPress={handleAddAchievement}>
+        <Text className='btn-primary__label'>Save Win</Text>
+      </Pressable>
 
       <View className='h-10' />
     </ScrollView>

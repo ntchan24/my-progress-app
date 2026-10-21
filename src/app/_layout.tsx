@@ -31,7 +31,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
         <Stack.Protected guard = {!hasCompletedOnboarding}>
         <Stack.Screen name='(onboarding)' />  
         </Stack.Protected>
@@ -43,8 +43,10 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             title: 'Settings',
-            headerStyle: { backgroundColor: colors.background },
-            headerTintColor: colors.text,
+            headerStyle: { backgroundColor: colors.bg },
+            headerTintColor: colors.textPrimary,
+            headerTitleStyle: { fontSize: 17, fontWeight: '600' },
+            headerShadowVisible: false,
           }}
         />
         <Stack.Screen name='paywall' options={{ presentation: 'modal' }} />

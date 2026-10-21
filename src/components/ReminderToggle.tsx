@@ -34,12 +34,14 @@ export default function ReminderToggle() {
   };
 
   return (
-    <View className='flex-row justify-between items-center mt-[30px]'>
-      <Text className='text-text text-base'>Meal Reminders</Text>
+    <View className='cell'>
+      <Text className='cell__title'>Meal Reminders</Text>
       <Switch
         value={enabled}
         onValueChange={toggle}
-        trackColor={{ false: colors.surface, true: colors.primary }}
+        trackColor={{ false: colors.surfaceHigh, true: colors.inverse }}
+        thumbColor={enabled ? colors.onInverse : colors.textSecondary}
+        ios_backgroundColor={colors.surfaceHigh}
       />
     </View>
   );

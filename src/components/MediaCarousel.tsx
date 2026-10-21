@@ -111,10 +111,10 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
 
       {/* Counter Badge */}
       <View
-        className='absolute top-[60px] right-5 bg-black/60 px-3 py-1.5 rounded-[20px]'
+        className='chip absolute top-[60px] right-16 bg-black/40'
         pointerEvents='none'
       >
-        <Text className='text-white text-sm font-semibold'>
+        <Text className='chip__label'>
           {currentIndex + 1}/{media.length}
         </Text>
       </View>
@@ -128,7 +128,7 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
           <View
             key={index}
             className={`rounded-full ${
-              index === currentIndex ? 'size-2 bg-white' : 'size-1.5 bg-white/50'
+              index === currentIndex ? 'size-1.5 bg-inverse' : 'size-1.5 bg-white/30'
             }`}
           />
         ))}

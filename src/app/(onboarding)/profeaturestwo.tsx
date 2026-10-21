@@ -1,17 +1,20 @@
 import { Link } from "expo-router";
-import { Pressable, ScrollView, Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function ProFeaturesTwoScreen(){
     return (
-        <ScrollView className="screen">
+        <View className="flow">
+            <View className="flow__body">
+                <Text className="screen__title">Pro members get cloud storage, widgets, and reminders.</Text>
+            </View>
 
-            <Text className="screen__title">Pro members get cloud storage, widgets, and reminders. </Text>
-
-            <Link href="/(onboarding)/paywall" asChild>
-                <Pressable className="btn-primary active:opacity-80">
-                    <Text className="btn-primary__label">Get Started</Text>
-                </Pressable>
-            </Link>
-        </ScrollView>
+            <View className="flow__footer">
+                <Link href="/(onboarding)/paywall" asChild>
+                    <Pressable className="btn-primary">
+                        <Text className="btn-primary__label">Next</Text>
+                    </Pressable>
+                </Link>
+            </View>
+        </View>
     )
 }

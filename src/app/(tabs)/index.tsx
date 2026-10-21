@@ -18,9 +18,8 @@ import {
   Alert,
   Dimensions,
   FlatList,
-  StyleSheet,
+  Pressable,
   Text,
-  TouchableOpacity,
   View,
   ViewToken,
 } from 'react-native';
@@ -115,24 +114,20 @@ export default function HomeScreen() {
   };
 
   const quickAddButton = (
-    <TouchableOpacity
-      className='absolute right-5 bottom-6 w-[60px] h-[60px] rounded-full bg-primary items-center justify-center'
-      style={styles.shadow}
+    <Pressable
+      className='fab'
       onPress={handleQuickAdd}
       accessibilityLabel='Quick add photo or video'
     >
-      <Ionicons name='camera' size={28} color={colors.background} />
-    </TouchableOpacity>
+      <Ionicons name='camera-outline' size={24} color={colors.onInverse} />
+    </Pressable>
   );
 
   // TEMP (dev only): sends you back through onboarding. Remove when done testing it.
   const devResetButton = __DEV__ ? (
-    <TouchableOpacity
-      className='absolute top-[60px] right-4 px-3 py-1.5 rounded-full bg-surface'
-      onPress={resetOnboarding}
-    >
-      <Text className='text-xs text-text-secondary'>Reset onboarding</Text>
-    </TouchableOpacity>
+    <Pressable className='chip absolute top-[60px] right-4 active:opacity-70' onPress={resetOnboarding}>
+      <Text className='chip__label'>Reset Onboarding</Text>
+    </Pressable>
   ) : null;
 
   useFocusEffect(
@@ -164,17 +159,19 @@ export default function HomeScreen() {
   };
 
   if (!hasLoaded) {
-    return <View className='flex-1 bg-background' />;
+    return <View className='flex-1 bg-bg' />;
   }
 
   if (achievements.length === 0) {
     return (
-      <View className='flex-1 bg-background'>
+      <View className='flex-1 bg-bg'>
         <View className='empty-state'>
-          <Text className='empty-state__emoji'>🎉</Text>
-          <Text className='empty-state__title'>Your wins will live here</Text>
+          <View className='empty-state__icon'>
+            <Ionicons name='trophy-outline' size={24} color={colors.textPrimary} />
+          </View>
+          <Text className='empty-state__title'>your wins will live here.</Text>
           <Text className='empty-state__subtitle'>
-            Add your first achievement to get started!
+            Add your first win and it&apos;ll show up here.
           </Text>
         </View>
         {quickAddButton}
@@ -184,7 +181,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className='flex-1 bg-background'>
+    <View className='flex-1 bg-bg'>
       <FlatList
         ref={flatListRef}
         data={feed}
@@ -216,14 +213,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-// Shadows use StyleSheet because iOS and Android need different props
-const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-});

@@ -1,16 +1,20 @@
 import { router } from 'expo-router';
-import { ScrollView, Text, TouchableOpacity } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 // Paywall opened from Settings after onboarding.
 // TODO: when the real paywall design lands, share its body with (onboarding)/paywall.tsx
 export default function PaywallScreen() {
   return (
-    <ScrollView className='screen'>
-      <Text className='screen__title'>paywall</Text>
+    <View className='flow'>
+      <View className='flow__body'>
+        <Text className='type-display text-text-primary'>paywall</Text>
+      </View>
 
-      <TouchableOpacity onPress={() => router.back()} className='btn-primary mt-6'>
-        <Text className='btn-primary__label'>Maybe later</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      <View className='flow__footer'>
+        <Pressable onPress={() => router.back()} className='btn-text'>
+          <Text className='btn-text__label'>Maybe Later</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }

@@ -3,7 +3,7 @@ import { MediaItem } from '@/storage/achievements';
 import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type MediaThumbnailsProps = {
   media: MediaItem[];
@@ -20,27 +20,29 @@ export default function MediaThumbnails({ media, onRemove }: MediaThumbnailsProp
         showsHorizontalScrollIndicator={false}
       >
         {media.map((item, index) => (
-          <View key={index} className='mr-2.5 relative'>
+          <View key={index} className='mr-3 pt-2 pr-2 relative'>
             {item.type === 'image' ? (
               <Image source={{ uri: item.uri }} style={styles.thumbnail} />
             ) : (
-              <View className='w-[100px] h-[100px] rounded-[10px] bg-surface'>
+              <View className='size-[100px] rounded-xs bg-surface-raised'>
                 <Image source={{ uri: item.uri }} style={styles.thumbnail} />
-                <View className='absolute inset-0 items-center justify-center bg-black/30 rounded-[10px]'>
-                  <Ionicons name='play-circle' size={24} color='#fff' />
+                <View className='absolute inset-0 items-center justify-center bg-black/30 rounded-xs'>
+                  <Ionicons name='play' size={24} color={colors.textPrimary} />
                 </View>
               </View>
             )}
-            <TouchableOpacity
-              className='absolute -top-2 -right-2 bg-black/70 rounded-xl'
+            <Pressable
+              className='absolute top-0 right-0 size-6 rounded-full bg-surface-high items-center justify-center active:opacity-70'
               onPress={() => onRemove(index)}
+              hitSlop={10}
+              accessibilityLabel='Remove media'
             >
-              <Ionicons name='close-circle' size={24} color={colors.alert} />
-            </TouchableOpacity>
+              <Ionicons name='close' size={14} color={colors.textPrimary} />
+            </Pressable>
           </View>
         ))}
       </ScrollView>
-      <Text className='text-xs text-text-secondary mt-2 text-right'>{media.length}/{MAX_MEDIA_PER_POST} media items</Text>
+      <Text className='type-footnote text-text-secondary mt-2 text-right'>{media.length}/{MAX_MEDIA_PER_POST} media items</Text>
     </View>
   );
 }
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
   thumbnail: {
     width: 100,
     height: 100,
-    borderRadius: 10,
-    backgroundColor: colors.surface,
+    borderRadius: 8,
+    backgroundColor: colors.surfaceRaised,
   },
 });

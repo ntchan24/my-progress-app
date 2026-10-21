@@ -1,11 +1,19 @@
-// For props that only accept JS color values (icon colors, placeholderTextColor,
-// navigator options). Mirrors the @theme colors in src/global.css.
+// Still design system (dark). For props that only accept JS color values (icon colors,
+// placeholderTextColor, navigator options). Mirrors the @theme colors in src/global.css.
 export const colors = {
-  background: '#1a1a2e',
-  header: '#242444',
-  surface: '#2a2a4a',
-  primary: '#4fc3f7',
-  text: '#ffffff',
-  textSecondary: '#a0a0b0',
-  alert: '#ff5252',
+  bg: '#000000',
+  surface: '#141414',
+  surfaceRaised: '#1E1E1E',
+  surfaceHigh: '#2A2A2A',
+  border: '#262626',
+  borderStrong: '#3A3A3A',
+  textPrimary: '#E8E8E8',
+  textSecondary: '#9C9C9C',
+  textTertiary: '#6E6E6E',
+  inverse: '#D6D6D6',
+  onInverse: '#0A0A0A',
+  scrim: 'rgba(0,0,0,0.6)',
+  danger: '#E0605A',
+  success: '#5DB07E',
+  warning: '#D9A441',
 };

@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, Text } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 export default function AddPhotosScreen(){
     const { goal, win } = useLocalSearchParams<{ goal: string; win: string }>();
@@ -85,29 +85,34 @@ const pickFromLibrary = async () => {
   };
 
     return (
-        <ScrollView className="screen">
+        <View className="flow">
+            <ScrollView className="flex-1" contentContainerStyle={{ gap: 12 }}>
+                <Text className="screen__title">Add photos to your post</Text>
+                <Text className="type-subhead text-text-secondary">{"Don't worry, everything stays on your device and is never shared with us."}</Text>
 
-            <Text className="screen__title">{"Add photos to posts! Don't worry, all data is local only and will not be shared with us."}</Text>
+                {/* Preview of the goal and win passed via route params */}
+                <View className="card mt-5 gap-1">
+                    <Text className="type-title3 text-text-primary">{win}</Text>
+                    <Text className="type-subhead text-text-secondary">{goal}</Text>
+                </View>
 
-            {/* Display the goal and win passed via route params */}
-            <Text className="screen__title">{goal}</Text>
-            <Text className="screen__subtitle">{win}</Text>
+                <Pressable onPress={pickFromLibrary} className="btn-tonal mt-2">
+                    <Ionicons name="images-outline" size={20} color={colors.textPrimary} />
+                    <Text className="btn-tonal__label">Choose from Library</Text>
+                </Pressable>
 
-            <Pressable onPress={pickFromLibrary} className="btn-dashed active:opacity-80">
-                <Ionicons name="images-outline" size={24} color={colors.primary} />
-                <Text className="btn-dashed__label">Choose from Library</Text>
-            </Pressable>
+                <MediaThumbnails media={media} onRemove={removeMedia} />
+            </ScrollView>
 
-            <MediaThumbnails media={media} onRemove={removeMedia} />
-
-            <Pressable
-                onPress={handleContinue}
-                disabled={saving}
-                className={`btn-primary mt-6 active:opacity-80 ${saving ? 'opacity-60' : ''}`}
-            >
-                <Text className="btn-primary__label">Get Started</Text>
-            </Pressable>
-
-        </ScrollView>
+            <View className="flow__footer pt-4">
+                <Pressable
+                    onPress={handleContinue}
+                    disabled={saving}
+                    className={`btn-primary ${saving ? 'btn--disabled' : ''}`}
+                >
+                    <Text className="btn-primary__label">Continue</Text>
+                </Pressable>
+            </View>
+        </View>
     )
 }

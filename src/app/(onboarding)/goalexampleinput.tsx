@@ -15,22 +15,28 @@ export default function GoalExampleInputScreen() {
     };
 
     return (
-        <View className="screen">
-            <TextInput
-                className="screen__input"
-                onChangeText={setGoal}
-                value={goal}
-                placeholder="Enter a goal"
-                placeholderTextColor={colors.textSecondary}
-            />
+        <View className="flow">
+            <View className="flow__body">
+                <TextInput
+                    className="screen__input"
+                    onChangeText={setGoal}
+                    value={goal}
+                    placeholder="Enter a goal"
+                    placeholderTextColor={colors.textTertiary}
+                    selectionColor={colors.textPrimary}
+                    autoFocus
+                />
+            </View>
 
-            <Pressable
-                className={`btn-primary mt-6 active:opacity-80 ${canSubmit ? '' : 'opacity-50'}`}
-                onPress={goToWinExampleInputScreen}
-                disabled={!canSubmit}
-            >
-                <Text className="btn-primary__label">Submit</Text>
-            </Pressable>
+            <View className="flow__footer">
+                <Pressable
+                    className={`btn-primary ${canSubmit ? '' : 'btn--disabled'}`}
+                    onPress={goToWinExampleInputScreen}
+                    disabled={!canSubmit}
+                >
+                    <Text className="btn-primary__label">Next</Text>
+                </Pressable>
+            </View>
         </View>
     );
 }

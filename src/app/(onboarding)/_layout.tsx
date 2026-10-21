@@ -1,8 +1,19 @@
+import { colors } from '@/constants/colors';
 import { Stack } from 'expo-router';
 
 export default function OnboardingLayout() {
     return (
-        <Stack>
+        // Borderless nav bar on the screen background with a plain back chevron
+        <Stack
+            screenOptions={{
+                title: '',
+                headerStyle: { backgroundColor: colors.bg },
+                headerTintColor: colors.textPrimary,
+                headerShadowVisible: false,
+                headerBackButtonDisplayMode: 'minimal',
+                contentStyle: { backgroundColor: colors.bg },
+            }}
+        >
             <Stack.Screen name="hero" />
             <Stack.Screen name="goalexampleinput" />
             <Stack.Screen name="winexampleinput" />

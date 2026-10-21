@@ -9,7 +9,7 @@ export default function HomeHeader() {
 
   return (
     <View className='screen__header'>
-      <Text className='text-sm text-text-secondary mt-1 mb-[30px]'>{currentDate}</Text>
+      <Text className='type-subhead text-text-secondary mt-1 mb-8'>{currentDate}</Text>
     </View>
   );
 }

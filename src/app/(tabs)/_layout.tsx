@@ -6,33 +6,36 @@ import { View } from 'react-native';
 
 export default function TabLayout() {
   return (
-    <View className='flex-1'>
+    <View className='flex-1 bg-bg'>
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: colors.background,
-            borderTopColor: colors.surface,
+            backgroundColor: colors.bg,
+            borderTopColor: colors.border,
+            borderTopWidth: 0.5,
           },
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.textSecondary,
+          tabBarActiveTintColor: colors.textPrimary,
+          tabBarInactiveTintColor: colors.textTertiary,
+          tabBarLabelStyle: { fontSize: 12 },
         }}
       >
         <Tabs.Screen
           name='index'
           options={{
             title: 'Home',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name='home' size={size} color={color} />
+            // Filled icon only for the active tab
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
             ),
           }}
         />
         <Tabs.Screen
           name='add-achievement'
           options={{
-            title: 'Add Achievement',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name='add-circle' size={size} color={color} />
+            title: 'New Win',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={24} color={color} />
             ),
           }}
         />

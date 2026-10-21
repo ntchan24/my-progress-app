@@ -16,24 +16,30 @@ export default function WinExampleInputScreen() {
     };
 
     return (
-        <View className="screen">
-            <Text className="screen__title">{goal}</Text>
+        <View className="flow">
+            <View className="flow__body">
+                <Text className="type-footnote text-text-secondary">{goal}</Text>
 
-            <TextInput
-                className="screen__input"
-                onChangeText={setWin}
-                value={win}
-                placeholder="Enter a win"
-                placeholderTextColor={colors.textSecondary}
-            />
+                <TextInput
+                    className="screen__input"
+                    onChangeText={setWin}
+                    value={win}
+                    placeholder="Enter a win"
+                    placeholderTextColor={colors.textTertiary}
+                    selectionColor={colors.textPrimary}
+                    autoFocus
+                />
+            </View>
 
-            <Pressable
-                className={`btn-primary mt-6 active:opacity-80 ${canSubmit ? '' : 'opacity-50'}`}
-                onPress={goToAddPhotosScreen}
-                disabled={!canSubmit}
-            >
-                <Text className="btn-primary__label">Submit</Text>
-            </Pressable>
+            <View className="flow__footer">
+                <Pressable
+                    className={`btn-primary ${canSubmit ? '' : 'btn--disabled'}`}
+                    onPress={goToAddPhotosScreen}
+                    disabled={!canSubmit}
+                >
+                    <Text className="btn-primary__label">Next</Text>
+                </Pressable>
+            </View>
         </View>
     );
 }

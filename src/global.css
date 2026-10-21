@@ -4,79 +4,257 @@
 
 @import "nativewind/theme";
 
-/* Mirrors `colors` in src/constants/colors.ts (used for JS-only color props) */
+/* Still design system (dark) — see iosdesignsystem/DESIGN.md.
+   Mirrors `colors` in src/constants/colors.ts (used for JS-only color props).
+   Solid fills only: no gradients, no drop shadows. */
 @theme {
-  --color-background: #1a1a2e;
-  --color-header: #242444;
-  --color-surface: #2a2a4a;
-  --color-primary: #4fc3f7;
-  --color-text: #ffffff;
-  --color-text-secondary: #a0a0b0;
-  --color-alert: #ff5252;
+  --color-bg: #000000;
+  --color-surface: #141414;
+  --color-surface-raised: #1e1e1e;
+  --color-surface-high: #2a2a2a;
+  --color-border: #262626;
+  --color-border-strong: #3a3a3a;
+  --color-text-primary: #e8e8e8;
+  --color-text-secondary: #9c9c9c;
+  --color-text-tertiary: #6e6e6e;
+  --color-inverse: #d6d6d6;
+  --color-on-inverse: #0a0a0a;
+  --color-danger: #e0605a;
+  --color-success: #5db07e;
+  --color-warning: #d9a441;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+/* Typography — one utility per Still type style */
+@utility type-display {
+  font-size: 34px;
+  line-height: 41px;
+  font-weight: 700;
+  letter-spacing: 0.37px;
+}
+
+@utility type-title1 {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: 0.36px;
+}
+
+@utility type-title2 {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+}
+
+@utility type-title3 {
+  font-size: 20px;
+  line-height: 25px;
+  font-weight: 600;
+  letter-spacing: 0.38px;
+}
+
+@utility type-prompt {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+}
+
+@utility type-headline {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+}
+
+@utility type-body {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+}
+
+@utility type-callout {
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 400;
+  letter-spacing: -0.32px;
+}
+
+@utility type-subhead {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+}
+
+@utility type-footnote {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: -0.08px;
+}
+
+@utility type-caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+@utility type-overline {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
 }
 
 /* Screen layout */
 @utility screen {
-  @apply flex-1 bg-background pt-[60px] px-5;
-}
-
-@utility screen__title {
-  @apply text-[28px] font-bold text-text;
-}
-
-@utility screen__input {
-  @apply text-[28px] font-bold text-text;
-}
-
-@utility screen__subtitle {
-  @apply text-lg font-semibold text-text-secondary mt-[30px] mb-4;
-}
-
-/* Primary call-to-action button */
-@utility btn-primary {
-  @apply bg-primary p-4 rounded-xl items-center;
-}
-
-@utility btn-primary__label {
-  @apply text-background text-lg font-semibold;
-}
-
-/* Centered message shown when a list has nothing in it */
-@utility empty-state {
-  @apply flex-1 items-center justify-center px-10;
-}
-
-@utility empty-state__emoji {
-  @apply text-[80px] mb-5;
-}
-
-@utility empty-state__title {
-  @apply text-2xl font-bold text-text mb-2;
-}
-
-@utility empty-state__subtitle {
-  @apply text-base text-text-secondary text-center;
-}
-
-/* Dashed "add media" button, matches the one on add-achievement */
-@utility btn-dashed {
-  @apply flex-row items-center justify-center gap-2.5 p-4 mt-4 rounded-[10px] bg-surface border-2 border-dashed border-primary;
-}
-
-@utility btn-dashed__label {
-  @apply text-primary text-sm font-semibold;
+  @apply flex-1 bg-bg pt-[60px] px-5;
 }
 
 @utility screen__header {
   @apply flex-row justify-between items-center;
 }
 
-/* Text field on a surface background */
-@utility input {
-  @apply bg-surface text-text p-4 rounded-[10px] text-base mt-4;
+@utility screen__title {
+  @apply type-title1 text-text-primary;
 }
 
-/* Round 44px icon button that floats over content */
+@utility screen__input {
+  @apply type-title1 text-text-primary;
+}
+
+@utility screen__subtitle {
+  @apply type-subhead text-text-secondary mt-2;
+}
+
+/* Focused flow (onboarding): headline on top, one primary action pinned to the bottom */
+@utility flow {
+  @apply flex-1 bg-bg px-5 pt-6 pb-12;
+}
+
+@utility flow__body {
+  @apply flex-1 gap-3;
+}
+
+@utility flow__footer {
+  @apply gap-2;
+}
+
+/* Buttons — pills. Pressed: scale 0.97 + opacity 0.7 */
+@utility btn-primary {
+  @apply h-14 px-7 rounded-full bg-inverse flex-row items-center justify-center gap-2 active:opacity-70 active:scale-[0.97];
+}
+
+@utility btn-primary__label {
+  @apply type-headline text-on-inverse;
+}
+
+@utility btn-secondary {
+  @apply h-12 px-7 rounded-full border border-border-strong flex-row items-center justify-center gap-2 active:opacity-70 active:scale-[0.97];
+}
+
+@utility btn-secondary__label {
+  @apply type-headline text-text-primary;
+}
+
+@utility btn-tonal {
+  @apply h-12 px-5 rounded-full bg-surface-raised flex-row items-center justify-center gap-2 active:opacity-70 active:scale-[0.97];
+}
+
+@utility btn-tonal__label {
+  @apply type-headline text-text-primary;
+}
+
+@utility btn-text {
+  @apply h-11 items-center justify-center active:opacity-70;
+}
+
+@utility btn-text__label {
+  @apply type-headline text-text-secondary;
+}
+
+@utility btn--disabled {
+  @apply opacity-40;
+}
+
+/* TextField: label above, surfaceRaised fill, no border */
+@utility field {
+  @apply gap-1.5 mt-5;
+}
+
+@utility field__label {
+  @apply type-footnote text-text-secondary;
+}
+
+@utility input {
+  @apply h-[52px] px-4 rounded-md bg-surface-raised text-text-primary type-body;
+}
+
+@utility input--multiline {
+  @apply h-auto min-h-[104px] py-4;
+}
+
+/* Centered message shown when a list has nothing in it */
+@utility empty-state {
+  @apply flex-1 items-center justify-center px-10 gap-2;
+}
+
+@utility empty-state__icon {
+  @apply size-16 rounded-full bg-surface-raised items-center justify-center mb-4;
+}
+
+@utility empty-state__title {
+  @apply type-title2 text-text-primary text-center;
+}
+
+@utility empty-state__subtitle {
+  @apply type-subhead text-text-secondary text-center;
+}
+
+/* Surfaces */
+@utility card {
+  @apply bg-surface rounded-xl p-6;
+}
+
+@utility list-group {
+  @apply bg-surface rounded-lg overflow-hidden;
+}
+
+@utility cell {
+  @apply min-h-14 px-4 py-3.5 flex-row items-center gap-4 active:bg-surface-high;
+}
+
+@utility cell__title {
+  @apply flex-1 type-headline text-text-primary;
+}
+
+@utility cell__separator {
+  @apply h-[0.5px] bg-border ml-14;
+}
+
+/* Badge / chip */
+@utility chip {
+  @apply h-7 px-3 rounded-full bg-surface-raised flex-row items-center justify-center gap-1.5;
+}
+
+@utility chip__label {
+  @apply type-footnote font-semibold text-text-primary;
+}
+
+/* Round 44px icon button that floats over content (translucent so it reads over photos) */
 @utility overlay-btn {
-  @apply absolute w-11 h-11 rounded-full items-center justify-center;
+  @apply absolute size-11 rounded-full bg-black/40 items-center justify-center active:opacity-70;
+}
+
+/* 56px floating action button */
+@utility fab {
+  @apply absolute right-5 bottom-6 size-14 rounded-full bg-inverse items-center justify-center active:opacity-70 active:scale-[0.97];
 }
