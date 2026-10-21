@@ -1,6 +1,9 @@
+import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import MediaThumbnails from '@/components/MediaThumbnails';
 import { addAchievement, deleteAchievement, MediaItem } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
+import { colors } from '@/styles/global';
+import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -41,8 +44,8 @@ export default function AddPhotosScreen(){
     };
 
 const pickFromLibrary = async () => {
-    if (media.length >= 20) {
-      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+    if (media.length >= MAX_MEDIA_PER_POST) {
+      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
       return;
     }
 
@@ -62,7 +65,7 @@ const pickFromLibrary = async () => {
       allowsMultipleSelection: true,
       quality: 1,
       videoMaxDuration: 60,
-      selectionLimit: 20 - media.length, // Limit based on current count
+      selectionLimit: MAX_MEDIA_PER_POST - media.length, // Limit based on current count
     });
 
     if (!result.canceled && result.assets.length > 0) {
@@ -90,9 +93,9 @@ const pickFromLibrary = async () => {
             <Text className="screen__title">{goal}</Text>
             <Text className="screen__subtitle">{win}</Text>
 
-            {/* add photo button  */}
-            <Pressable onPress={pickFromLibrary}>
-                <Text className="text-text">Add a photo</Text>
+            <Pressable onPress={pickFromLibrary} className="btn-dashed active:opacity-80">
+                <Ionicons name="images-outline" size={24} color={colors.primary} />
+                <Text className="btn-dashed__label">Choose from Library</Text>
             </Pressable>
 
             <MediaThumbnails media={media} onRemove={removeMedia} />

@@ -8,9 +8,11 @@ export default function WinExampleInputScreen() {
     const { goal } = useLocalSearchParams<{ goal: string }>();
     const [win, setWin] = useState('');
     const router = useRouter();
+    // Blank wins would save an untitled post, so wait for real text
+    const canSubmit = win.trim().length > 0;
 
     const goToAddPhotosScreen = () => {
-        router.push({ pathname: '/addphotos', params: { goal, win } });
+        router.push({ pathname: '/addphotos', params: { goal, win: win.trim() } });
     };
 
     return (
@@ -25,7 +27,11 @@ export default function WinExampleInputScreen() {
                 placeholderTextColor={colors.textSecondary}
             />
 
-            <Pressable className="btn-primary mt-6 active:opacity-80" onPress={goToAddPhotosScreen}>
+            <Pressable
+                className={`btn-primary mt-6 active:opacity-80 ${canSubmit ? '' : 'opacity-50'}`}
+                onPress={goToAddPhotosScreen}
+                disabled={!canSubmit}
+            >
                 <Text className="btn-primary__label">Submit</Text>
             </Pressable>
         </View>

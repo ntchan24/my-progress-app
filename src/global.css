@@ -40,3 +40,29 @@
 @utility btn-primary__label {
   @apply text-background text-lg font-semibold;
 }
+
+/* Centered message shown when a list has nothing in it */
+@utility empty-state {
+  @apply flex-1 items-center justify-center px-10;
+}
+
+@utility empty-state__emoji {
+  @apply text-[80px] mb-5;
+}
+
+@utility empty-state__title {
+  @apply text-2xl font-bold text-text mb-2;
+}
+
+@utility empty-state__subtitle {
+  @apply text-base text-text-secondary text-center;
+}
+
+/* Dashed "add media" button, matches the one on add-achievement */
+@utility btn-dashed {
+  @apply flex-row items-center justify-center gap-2.5 p-4 mt-4 rounded-[10px] bg-surface border-2 border-dashed border-primary;
+}
+
+@utility btn-dashed__label {
+  @apply text-primary text-sm font-semibold;
+}

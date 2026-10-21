@@ -1,3 +1,4 @@
+import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import { MediaItem } from '@/storage/achievements';
 import { colors } from '@/styles/global';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,7 +41,7 @@ export default function MediaThumbnails({ media, onRemove }: MediaThumbnailsProp
           </View>
         ))}
       </ScrollView>
-      <Text style={styles.mediaCount}>{media.length}/20 media items</Text>
+      <Text style={styles.mediaCount}>{media.length}/{MAX_MEDIA_PER_POST} media items</Text>
     </View>
   );
 }

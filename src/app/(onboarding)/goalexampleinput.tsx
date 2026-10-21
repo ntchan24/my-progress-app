@@ -7,9 +7,11 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 export default function GoalExampleInputScreen() {
     const [goal, setGoal] = useState('');
     const router = useRouter();
+    // Blank goals would save a post with an empty caption, so wait for real text
+    const canSubmit = goal.trim().length > 0;
 
     const goToWinExampleInputScreen = () => {
-        router.push({ pathname: '/winexampleinput', params: { goal } });
+        router.push({ pathname: '/winexampleinput', params: { goal: goal.trim() } });
     };
 
     return (
@@ -22,7 +24,11 @@ export default function GoalExampleInputScreen() {
                 placeholderTextColor={colors.textSecondary}
             />
 
-            <Pressable className="btn-primary mt-6 active:opacity-80" onPress={goToWinExampleInputScreen}>
+            <Pressable
+                className={`btn-primary mt-6 active:opacity-80 ${canSubmit ? '' : 'opacity-50'}`}
+                onPress={goToWinExampleInputScreen}
+                disabled={!canSubmit}
+            >
                 <Text className="btn-primary__label">Submit</Text>
             </Pressable>
         </View>

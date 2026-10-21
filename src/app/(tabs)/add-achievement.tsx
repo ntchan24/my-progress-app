@@ -1,3 +1,4 @@
+import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import MediaThumbnails from '@/components/MediaThumbnails';
 import { addAchievement, MediaItem } from '@/storage/achievements';
 import { colors, globalStyles } from '@/styles/global';
@@ -22,8 +23,8 @@ export default function AddAchievementScreen() {
   const [media, setMedia] = useState<MediaItem[]>([]);
 
   const takePhoto = async () => {
-    if (media.length >= 20) {
-      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+    if (media.length >= MAX_MEDIA_PER_POST) {
+      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
       return;
     }
 
@@ -61,8 +62,8 @@ export default function AddAchievementScreen() {
   };
 
   const recordVideo = async () => {
-    if (media.length >= 20) {
-      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+    if (media.length >= MAX_MEDIA_PER_POST) {
+      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
       return;
     }
 
@@ -100,8 +101,8 @@ export default function AddAchievementScreen() {
   };
 
   const pickFromLibrary = async () => {
-    if (media.length >= 20) {
-      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+    if (media.length >= MAX_MEDIA_PER_POST) {
+      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
       return;
     }
 
@@ -121,7 +122,7 @@ export default function AddAchievementScreen() {
       allowsMultipleSelection: true,
       quality: 1,
       videoMaxDuration: 60,
-      selectionLimit: 20 - media.length, // Limit based on current count
+      selectionLimit: MAX_MEDIA_PER_POST - media.length, // Limit based on current count
     });
 
     if (!result.canceled && result.assets.length > 0) {
@@ -131,8 +132,8 @@ export default function AddAchievementScreen() {
       }));
 
       const totalCount = media.length + newMedia.length;
-      if (totalCount > 20) {
-        Alert.alert('Limit Reached', 'You can only add up to 20 media items total.');
+      if (totalCount > MAX_MEDIA_PER_POST) {
+        Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items total.`);
         return;
       }
 

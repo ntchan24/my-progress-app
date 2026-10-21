@@ -1,10 +1,10 @@
 import AchievementReelsCard from '@/components/AchievementReelsCard';
 import {
+  Achievement,
   addAchievement,
   deleteAchievement,
   getAchievements,
   markAchievementSeen,
-  Achievement,
 } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
 import { colors } from '@/styles/global';
@@ -31,6 +31,8 @@ export default function HomeScreen() {
   const resetOnboarding = useOnboardingStore((s) => s.resetOnboarding);
   // Source list from the database
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  // Stops the empty state flashing on launch before the database has responded
+  const [hasLoaded, setHasLoaded] = useState(false);
   // What the list renders: the first round, followed by reshuffled rounds as the user scrolls
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,6 +52,7 @@ export default function HomeScreen() {
     latestIdRef.current = latestId;
     roundRef.current = 0;
     setAchievements(data);
+    setHasLoaded(true);
     setFeed(toFeedItems(orderFeed(data), 0));
     setActiveIndex(0);
     flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
@@ -156,14 +159,18 @@ export default function HomeScreen() {
     itemVisiblePercentThreshold: 50,
   };
 
+  if (!hasLoaded) {
+    return <View style={styles.container} />;
+  }
+
   if (achievements.length === 0) {
     return (
       <View style={styles.container}>
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyEmoji}>🎉</Text>
-          <Text style={styles.emptyTitle}>No achievements yet</Text>
-          <Text style={styles.emptySubtitle}>
-            Add your first achievement to get started
+        <View className='empty-state'>
+          <Text className='empty-state__emoji'>🎉</Text>
+          <Text className='empty-state__title'>Your wins will live here</Text>
+          <Text className='empty-state__subtitle'>
+            Add your first achievement to get started!
           </Text>
         </View>
         {quickAddButton}
@@ -210,27 +217,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 40,
-  },
-  emptyEmoji: {
-    fontSize: 80,
-    marginBottom: 20,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  emptySubtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
   },
   quickAddButton: {
     position: 'absolute',
