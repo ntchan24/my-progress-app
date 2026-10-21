@@ -1,32 +1,109 @@
-import { colors, globalStyles } from "@/styles/global";
+import MediaThumbnails from '@/components/MediaThumbnails';
+import { addAchievement, deleteAchievement, MediaItem } from '@/storage/achievements';
+import { useOnboardingStore } from '@/store/onboarding';
+import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
-
-
-// should i have an actual take a photo thing here or just a demo of what it looks like to add a photo
+import { useState } from "react";
+import { Alert, Pressable, ScrollView, Text } from "react-native";
 
 export default function AddPhotosScreen(){
     const { goal, win } = useLocalSearchParams<{ goal: string; win: string }>();
     const router = useRouter();
+    const firstPost = useOnboardingStore((state) => state.firstPost);
+    const setFirstPost = useOnboardingStore((state) => state.setFirstPost);
 
-    const goToShowMockup = () => {
-        router.push({ pathname: '/showmockup', params: { goal, win } });
+    const [media, setMedia] = useState<MediaItem[]>([]);
+    const [saving, setSaving] = useState(false);
+
+    const handleContinue = async () => {
+        setSaving(true);
+        try {
+            // If the user came back from showmockup, replace the earlier post instead of duplicating it
+            if (firstPost) {
+                await deleteAchievement(firstPost.id);
+            }
+
+            const post = await addAchievement({
+                name: win,
+                caption: goal,
+                media: media.length > 0 ? media : undefined,
+            });
+
+            setFirstPost(post);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            router.push('/showmockup');
+        } catch {
+            Alert.alert('Something went wrong', "We couldn't save your post. Please try again.");
+        } finally {
+            setSaving(false);
+        }
     };
 
+const pickFromLibrary = async () => {
+    if (media.length >= 20) {
+      Alert.alert('Limit Reached', 'You can only add up to 20 media items.');
+      return;
+    }
+
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert(
+        'Permission Required',
+        'Please allow access to your media library.',
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images', 'videos'],
+      allowsMultipleSelection: true,
+      quality: 1,
+      videoMaxDuration: 60,
+      selectionLimit: 20 - media.length, // Limit based on current count
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      const newMedia: MediaItem[] = result.assets.map(asset => ({
+        uri: asset.uri,
+        type: asset.type === 'video' ? 'video' : 'image',
+      }));
+
+      setMedia([...media, ...newMedia]);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  const removeMedia = (index: number) => {
+    setMedia(media.filter((_, i) => i !== index));
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
     return (
-        <ScrollView style={globalStyles.container}>
-        
-            <Text style = {globalStyles.title}>{"Add photos to posts! Don't worry, all data is local only and will not be shared with us."}</Text>
+        <ScrollView className="screen">
+
+            <Text className="screen__title">{"Add photos to posts! Don't worry, all data is local only and will not be shared with us."}</Text>
 
             {/* Display the goal and win passed via route params */}
-            <Text style={globalStyles.title}>{goal}</Text>
-            <Text style={globalStyles.sectionTitle}>{win}</Text>
+            <Text className="screen__title">{goal}</Text>
+            <Text className="screen__subtitle">{win}</Text>
 
+            {/* add photo button  */}
+            <Pressable onPress={pickFromLibrary}>
+                <Text className="text-text">Add a photo</Text>
+            </Pressable>
 
+            <MediaThumbnails media={media} onRemove={removeMedia} />
 
-            <TouchableOpacity onPress = {goToShowMockup} style={{ backgroundColor: colors.primary, padding: 16, borderRadius: 12, alignItems: 'center' }}>
-                                <Text style={{ color: colors.background, fontSize: 18, fontWeight: '600' }}>Get Started</Text>
-                            </TouchableOpacity>
+            <Pressable
+                onPress={handleContinue}
+                disabled={saving}
+                className={`btn-primary mt-6 active:opacity-80 ${saving ? 'opacity-60' : ''}`}
+            >
+                <Text className="btn-primary__label">Get Started</Text>
+            </Pressable>
 
         </ScrollView>
     )

@@ -1,0 +1,42 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+/* Mirrors `colors` in src/styles/global.ts so converted screens look the same */
+@theme {
+  --color-background: #1a1a2e;
+  --color-header: #242444;
+  --color-surface: #2a2a4a;
+  --color-primary: #4fc3f7;
+  --color-text: #ffffff;
+  --color-text-secondary: #a0a0b0;
+  --color-alert: #ff5252;
+}
+
+/* Screen layout */
+@utility screen {
+  @apply flex-1 bg-background pt-[60px] px-5;
+}
+
+@utility screen__title {
+  @apply text-[28px] font-bold text-text;
+}
+
+@utility screen__input {
+  @apply text-[28px] font-bold text-text;
+}
+
+@utility screen__subtitle {
+  @apply text-lg font-semibold text-text-secondary mt-[30px] mb-4;
+}
+
+/* Primary call-to-action button */
+@utility btn-primary {
+  @apply bg-primary p-4 rounded-xl items-center;
+}
+
+@utility btn-primary__label {
+  @apply text-background text-lg font-semibold;
+}

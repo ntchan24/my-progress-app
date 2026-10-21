@@ -1,7 +1,7 @@
-import { colors, globalStyles } from '@/styles/global';
+import { colors } from '@/styles/global';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, Text, TextInput, View } from 'react-native';
 
 // Read the goal from the previous screen, take a win, and pass both on to the add photos screen
 export default function WinExampleInputScreen() {
@@ -14,23 +14,20 @@ export default function WinExampleInputScreen() {
     };
 
     return (
-        <View style={globalStyles.container}>
-            <Text style={globalStyles.title}>{goal}</Text>
+        <View className="screen">
+            <Text className="screen__title">{goal}</Text>
 
             <TextInput
-                style={globalStyles.input}
+                className="screen__input"
                 onChangeText={setWin}
                 value={win}
                 placeholder="Enter a win"
                 placeholderTextColor={colors.textSecondary}
             />
 
-            <TouchableOpacity
-                style={{ backgroundColor: colors.primary, padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 24 }}
-                onPress={goToAddPhotosScreen}
-            >
-                <Text style={{ color: colors.background, fontSize: 18, fontWeight: '600' }}>Submit</Text>
-            </TouchableOpacity>
+            <Pressable className="btn-primary mt-6 active:opacity-80" onPress={goToAddPhotosScreen}>
+                <Text className="btn-primary__label">Submit</Text>
+            </Pressable>
         </View>
     );
 }

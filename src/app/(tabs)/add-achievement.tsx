@@ -1,8 +1,8 @@
+import MediaThumbnails from '@/components/MediaThumbnails';
 import { addAchievement, MediaItem } from '@/storage/achievements';
 import { colors, globalStyles } from '@/styles/global';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -211,37 +211,7 @@ export default function AddAchievementScreen() {
         </TouchableOpacity>
       </View>
 
-      {media.length > 0 && (
-        <View style={styles.mediaThumbnailsContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.mediaThumbnailsScroll}
-          >
-            {media.map((item, index) => (
-              <View key={index} style={styles.mediaThumbnailWrapper}>
-                {item.type === 'image' ? (
-                  <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
-                ) : (
-                  <View style={styles.mediaThumbnail}>
-                    <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
-                    <View style={styles.videoIndicator}>
-                      <Ionicons name='play-circle' size={24} color='#fff' />
-                    </View>
-                  </View>
-                )}
-                <TouchableOpacity
-                  style={styles.removeThumbnailButton}
-                  onPress={() => removeMedia(index)}
-                >
-                  <Ionicons name='close-circle' size={24} color={colors.alert} />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </ScrollView>
-          <Text style={styles.mediaCount}>{media.length}/20 media items</Text>
-        </View>
-      )}
+      <MediaThumbnails media={media} onRemove={removeMedia} />
 
       <TextInput
         style={styles.input}
@@ -299,46 +269,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
-  },
-  mediaThumbnailsContainer: {
-    marginTop: 16,
-  },
-  mediaThumbnailsScroll: {
-    flexDirection: 'row',
-  },
-  mediaThumbnailWrapper: {
-    marginRight: 10,
-    position: 'relative',
-  },
-  mediaThumbnail: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    backgroundColor: colors.surface,
-  },
-  videoIndicator: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 10,
-  },
-  removeThumbnailButton: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    borderRadius: 12,
-  },
-  mediaCount: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginTop: 8,
-    textAlign: 'right',
   },
   input: {
     backgroundColor: colors.surface,

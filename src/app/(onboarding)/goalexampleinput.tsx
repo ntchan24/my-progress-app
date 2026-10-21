@@ -1,7 +1,7 @@
-import { colors, globalStyles } from '@/styles/global';
+import { colors } from '@/styles/global';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, Text, TextInput, View } from 'react-native';
 
 // Take a goal from the user and pass it on to the win input screen
 export default function GoalExampleInputScreen() {
@@ -13,21 +13,18 @@ export default function GoalExampleInputScreen() {
     };
 
     return (
-        <View style={globalStyles.container}>
+        <View className="screen">
             <TextInput
-                style={globalStyles.input}
+                className="screen__input"
                 onChangeText={setGoal}
                 value={goal}
                 placeholder="Enter a goal"
                 placeholderTextColor={colors.textSecondary}
             />
 
-            <TouchableOpacity
-                style={{ backgroundColor: colors.primary, padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 24 }}
-                onPress={goToWinExampleInputScreen}
-            >
-                <Text style={{ color: colors.background, fontSize: 18, fontWeight: '600' }}>Submit</Text>
-            </TouchableOpacity>
+            <Pressable className="btn-primary mt-6 active:opacity-80" onPress={goToWinExampleInputScreen}>
+                <Text className="btn-primary__label">Submit</Text>
+            </Pressable>
         </View>
     );
 }

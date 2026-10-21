@@ -1,3 +1,4 @@
+import '../global.css';
 import { initDatabase } from '@/storage/db';
 import { useOnboardingStore } from '@/store/onboarding';
 import { colors } from '@/styles/global';
