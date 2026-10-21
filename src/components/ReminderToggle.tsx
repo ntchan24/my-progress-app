@@ -1,4 +1,4 @@
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import {
     cancelMealReminders,
     requestPermissions,
@@ -6,7 +6,7 @@ import {
 } from '@/utils/notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import { Switch, Text, View } from 'react-native';
 
 const REMINDERS_KEY = 'remindersEnabled';
 
@@ -34,8 +34,8 @@ export default function ReminderToggle() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Meal Reminders</Text>
+    <View className='flex-row justify-between items-center mt-[30px]'>
+      <Text className='text-text text-base'>Meal Reminders</Text>
       <Switch
         value={enabled}
         onValueChange={toggle}
@@ -44,16 +44,3 @@ export default function ReminderToggle() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  label: {
-    color: colors.text,
-    fontSize: 16,
-  },
-});

@@ -66,7 +66,7 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
   if (media.length === 1) {
     const item = media[0];
     return (
-      <View style={styles.carouselContainer}>
+      <View className='absolute inset-0'>
         {item.type === 'image' ? (
           <Image source={{ uri: item.uri }} style={styles.media} />
         ) : (
@@ -85,7 +85,7 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
   };
 
   return (
-    <View style={styles.carouselContainer}>
+    <View className='absolute inset-0'>
       <ScrollView
         ref={scrollViewRef}
         horizontal
@@ -93,10 +93,10 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        style={styles.scrollView}
+        className='flex-1'
       >
         {media.map((item, index) => (
-          <View key={index} style={styles.mediaContainer}>
+          <View key={index} className='h-full' style={{ width: SCREEN_WIDTH }}>
             {item.type === 'image' ? (
               <Image source={{ uri: item.uri }} style={styles.media} />
             ) : (
@@ -110,21 +110,26 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
       </ScrollView>
 
       {/* Counter Badge */}
-      <View style={styles.counterBadge} pointerEvents="none">
-        <Text style={styles.counterText}>
+      <View
+        className='absolute top-[60px] right-5 bg-black/60 px-3 py-1.5 rounded-[20px]'
+        pointerEvents='none'
+      >
+        <Text className='text-white text-sm font-semibold'>
           {currentIndex + 1}/{media.length}
         </Text>
       </View>
 
       {/* Pagination Dots */}
-      <View style={styles.dotsContainer} pointerEvents="none">
+      <View
+        className='absolute bottom-[200px] left-0 right-0 flex-row justify-center items-center gap-1.5'
+        pointerEvents='none'
+      >
         {media.map((_, index) => (
           <View
             key={index}
-            style={[
-              styles.dot,
-              index === currentIndex && styles.activeDot,
-            ]}
+            className={`rounded-full ${
+              index === currentIndex ? 'size-2 bg-white' : 'size-1.5 bg-white/50'
+            }`}
           />
         ))}
       </View>
@@ -132,61 +137,10 @@ export default function MediaCarousel({ media, isActive }: MediaCarouselProps) {
   );
 }
 
+// expo-image and expo-video don't support className, so they keep a StyleSheet
 const styles = StyleSheet.create({
-  carouselContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  mediaContainer: {
-    width: SCREEN_WIDTH,
-    height: '100%',
-  },
   media: {
     width: '100%',
     height: '100%',
-  },
-  counterBadge: {
-    position: 'absolute',
-    top: 60,
-    right: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  counterText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  dotsContainer: {
-    position: 'absolute',
-    bottom: 200,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-  },
-  activeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#fff',
   },
 });

@@ -7,7 +7,7 @@ import {
   markAchievementSeen,
 } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { FeedItem, nextRound, orderFeed, toFeedItems } from '@/utils/feedOrder';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -116,7 +116,8 @@ export default function HomeScreen() {
 
   const quickAddButton = (
     <TouchableOpacity
-      style={styles.quickAddButton}
+      className='absolute right-5 bottom-6 w-[60px] h-[60px] rounded-full bg-primary items-center justify-center'
+      style={styles.shadow}
       onPress={handleQuickAdd}
       accessibilityLabel='Quick add photo or video'
     >
@@ -126,8 +127,11 @@ export default function HomeScreen() {
 
   // TEMP (dev only): sends you back through onboarding. Remove when done testing it.
   const devResetButton = __DEV__ ? (
-    <TouchableOpacity style={styles.devResetButton} onPress={resetOnboarding}>
-      <Text style={styles.devResetText}>Reset onboarding</Text>
+    <TouchableOpacity
+      className='absolute top-[60px] right-4 px-3 py-1.5 rounded-full bg-surface'
+      onPress={resetOnboarding}
+    >
+      <Text className='text-xs text-text-secondary'>Reset onboarding</Text>
     </TouchableOpacity>
   ) : null;
 
@@ -160,12 +164,12 @@ export default function HomeScreen() {
   };
 
   if (!hasLoaded) {
-    return <View style={styles.container} />;
+    return <View className='flex-1 bg-background' />;
   }
 
   if (achievements.length === 0) {
     return (
-      <View style={styles.container}>
+      <View className='flex-1 bg-background'>
         <View className='empty-state'>
           <Text className='empty-state__emoji'>🎉</Text>
           <Text className='empty-state__title'>Your wins will live here</Text>
@@ -180,7 +184,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View className='flex-1 bg-background'>
       <FlatList
         ref={flatListRef}
         data={feed}
@@ -213,38 +217,13 @@ export default function HomeScreen() {
   );
 }
 
+// Shadows use StyleSheet because iOS and Android need different props
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  quickAddButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+  shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-  },
-  devResetButton: {
-    position: 'absolute',
-    top: 60,
-    right: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: colors.surface,
-  },
-  devResetText: {
-    fontSize: 12,
-    color: colors.textSecondary,
   },
 });

@@ -1,7 +1,7 @@
 import '../global.css';
 import { initDatabase } from '@/storage/db';
 import { useOnboardingStore } from '@/store/onboarding';
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

@@ -1,6 +1,6 @@
 import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import { MediaItem } from '@/storage/achievements';
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -14,26 +14,25 @@ export default function MediaThumbnails({ media, onRemove }: MediaThumbnailsProp
   if (media.length === 0) return null;
 
   return (
-    <View style={styles.mediaThumbnailsContainer}>
+    <View className='mt-4'>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles.mediaThumbnailsScroll}
       >
         {media.map((item, index) => (
-          <View key={index} style={styles.mediaThumbnailWrapper}>
+          <View key={index} className='mr-2.5 relative'>
             {item.type === 'image' ? (
-              <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
+              <Image source={{ uri: item.uri }} style={styles.thumbnail} />
             ) : (
-              <View style={styles.mediaThumbnail}>
-                <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
-                <View style={styles.videoIndicator}>
+              <View className='w-[100px] h-[100px] rounded-[10px] bg-surface'>
+                <Image source={{ uri: item.uri }} style={styles.thumbnail} />
+                <View className='absolute inset-0 items-center justify-center bg-black/30 rounded-[10px]'>
                   <Ionicons name='play-circle' size={24} color='#fff' />
                 </View>
               </View>
             )}
             <TouchableOpacity
-              style={styles.removeThumbnailButton}
+              className='absolute -top-2 -right-2 bg-black/70 rounded-xl'
               onPress={() => onRemove(index)}
             >
               <Ionicons name='close-circle' size={24} color={colors.alert} />
@@ -41,50 +40,17 @@ export default function MediaThumbnails({ media, onRemove }: MediaThumbnailsProp
           </View>
         ))}
       </ScrollView>
-      <Text style={styles.mediaCount}>{media.length}/{MAX_MEDIA_PER_POST} media items</Text>
+      <Text className='text-xs text-text-secondary mt-2 text-right'>{media.length}/{MAX_MEDIA_PER_POST} media items</Text>
     </View>
   );
 }
 
+// expo-image's Image doesn't support className, so it keeps a StyleSheet
 const styles = StyleSheet.create({
-  mediaThumbnailsContainer: {
-    marginTop: 16,
-  },
-  mediaThumbnailsScroll: {
-    flexDirection: 'row',
-  },
-  mediaThumbnailWrapper: {
-    marginRight: 10,
-    position: 'relative',
-  },
-  mediaThumbnail: {
+  thumbnail: {
     width: 100,
     height: 100,
     borderRadius: 10,
     backgroundColor: colors.surface,
-  },
-  videoIndicator: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 10,
-  },
-  removeThumbnailButton: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    borderRadius: 12,
-  },
-  mediaCount: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginTop: 8,
-    textAlign: 'right',
   },
 });

@@ -1,7 +1,7 @@
 import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import MediaThumbnails from '@/components/MediaThumbnails';
 import { addAchievement, MediaItem } from '@/storage/achievements';
-import { colors, globalStyles } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,7 +10,6 @@ import { useState } from 'react';
 import {
   Alert,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -191,31 +190,32 @@ export default function AddAchievementScreen() {
   };
 
   return (
-    <ScrollView style={globalStyles.container}>
-      <Text style={[globalStyles.title, styles.title]}>Add Achievement</Text>
+    <ScrollView className='screen'>
+      {/* Left margin leaves room for the floating menu button */}
+      <Text className='screen__title ml-[52px]'>Add Achievement</Text>
 
-      <View style={styles.mediaButtonsRow}>
+      <View className='flex-row gap-2.5 mt-4'>
         <TouchableOpacity
-          style={[styles.mediaButton, styles.halfButton]}
+          className='btn-dashed flex-1 mt-0'
           onPress={handleCameraPress}
         >
           <Ionicons name='camera-outline' size={24} color={colors.primary} />
-          <Text style={styles.mediaButtonText}>Take Photo/Video</Text>
+          <Text className='btn-dashed__label'>Take Photo/Video</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.mediaButton, styles.halfButton]}
+          className='btn-dashed flex-1 mt-0'
           onPress={pickFromLibrary}
         >
           <Ionicons name='images-outline' size={24} color={colors.primary} />
-          <Text style={styles.mediaButtonText}>Choose from Library</Text>
+          <Text className='btn-dashed__label'>Choose from Library</Text>
         </TouchableOpacity>
       </View>
 
       <MediaThumbnails media={media} onRemove={removeMedia} />
 
       <TextInput
-        style={styles.input}
+        className='input'
         placeholder='Achievement name'
         placeholderTextColor={colors.textSecondary}
         value={name}
@@ -223,7 +223,8 @@ export default function AddAchievementScreen() {
       />
 
       <TextInput
-        style={[styles.input, styles.captionInput]}
+        className='input min-h-20'
+        textAlignVertical='top'
         placeholder='Add a caption or note (optional)'
         placeholderTextColor={colors.textSecondary}
         value={caption}
@@ -232,67 +233,11 @@ export default function AddAchievementScreen() {
         numberOfLines={3}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleAddAchievement}>
-        <Text style={styles.buttonText}>Add Achievement</Text>
+      <TouchableOpacity className='btn-primary rounded-[10px] mt-6' onPress={handleAddAchievement}>
+        <Text className='text-background text-base font-bold'>Add Achievement</Text>
       </TouchableOpacity>
 
-      <View style={{ height: 40 }} />
+      <View className='h-10' />
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  // Leaves room for the floating menu button in the top-left corner
-  title: {
-    marginLeft: 52,
-  },
-  mediaButtonsRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 16,
-  },
-  mediaButton: {
-    backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderStyle: 'dashed',
-  },
-  halfButton: {
-    flex: 1,
-  },
-  mediaButtonText: {
-    color: colors.primary,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  input: {
-    backgroundColor: colors.surface,
-    color: colors.text,
-    padding: 16,
-    borderRadius: 10,
-    fontSize: 16,
-    marginTop: 16,
-  },
-  captionInput: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  button: {
-    backgroundColor: colors.primary,
-    padding: 16,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  buttonText: {
-    color: colors.background,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});

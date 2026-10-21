@@ -1,12 +1,12 @@
 import SettingsMenu from '@/components/SettingsMenu';
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { View } from 'react-native';
 
 export default function TabLayout() {
   return (
-    <View style={{ flex: 1 }}>
+    <View className='flex-1'>
       <Tabs
         screenOptions={{
           headerShown: false,

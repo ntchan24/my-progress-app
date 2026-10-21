@@ -1,22 +1,10 @@
-import { colors, globalStyles } from '@/styles/global';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 export default function SettingsScreen() {
   return (
-    <ScrollView style={[globalStyles.container, styles.container]}>
-      <Text style={styles.comingSoon}>More settings are on the way.</Text>
+    // The native header already provides top spacing
+    <ScrollView className='screen pt-6'>
+      <Text className='text-sm text-text-secondary text-center'>More settings are on the way.</Text>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  // The native header already provides top spacing
-  container: {
-    paddingTop: 24,
-  },
-  comingSoon: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-});

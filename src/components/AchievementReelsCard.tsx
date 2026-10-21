@@ -1,6 +1,5 @@
 import MediaCarousel from '@/components/MediaCarousel';
 import { Achievement } from '@/storage/achievements';
-import { colors } from '@/styles/global';
 import { Ionicons } from '@expo/vector-icons';
 import {
   ActionSheetIOS,
@@ -80,30 +79,39 @@ export default function AchievementReelsCard({
   };
 
   return (
-    <View style={styles.container}>
+    <View className='w-full bg-background relative' style={{ height: SCREEN_HEIGHT }}>
       {/* Background Media */}
       {achievement.media && achievement.media.length > 0 ? (
         <MediaCarousel media={achievement.media} isActive={isActive} />
       ) : (
-        <View style={styles.defaultBackground}>
-          <Text style={styles.defaultBackgroundEmoji}>🎉</Text>
+        <View className='absolute inset-0 bg-surface items-center justify-center'>
+          <Text className='text-[120px] opacity-30'>🎉</Text>
         </View>
       )}
 
       {/* Content Overlay */}
-      <View style={styles.content} pointerEvents="none">
+      <View className='absolute bottom-[100px] left-5 right-5' pointerEvents='none'>
         {achievement.name ? (
-          <Text style={styles.achievementName}>{achievement.name}</Text>
+          <Text className='text-[32px] font-bold text-white mb-2' style={styles.nameShadow}>
+            {achievement.name}
+          </Text>
         ) : null}
 
-        {achievement.caption && <Text style={styles.caption}>{achievement.caption}</Text>}
+        {achievement.caption && (
+          <Text className='text-base text-white mb-3 leading-[22px]' style={styles.captionShadow}>
+            {achievement.caption}
+          </Text>
+        )}
 
-        <Text style={styles.timestamp}>{formatDate(achievement.createdAt)}</Text>
+        <Text className='text-xs text-white/70' style={styles.timestampShadow}>
+          {formatDate(achievement.createdAt)}
+        </Text>
       </View>
 
       {/* Options Button */}
       <TouchableOpacity
-        style={[styles.optionsButton, { top: insets.top + 12 }]}
+        className='overlay-btn right-4 bg-black/35'
+        style={{ top: insets.top + 12 }}
         onPress={handleOptions}
         accessibilityLabel='Achievement options'
       >
@@ -113,66 +121,14 @@ export default function AchievementReelsCard({
   );
 }
 
+// NativeWind doesn't map text shadows, so they stay in StyleSheet
+const textShadow = {
+  textShadowColor: 'rgba(0, 0, 0, 0.75)',
+  textShadowOffset: { width: 0, height: 1 },
+};
+
 const styles = StyleSheet.create({
-  container: {
-    height: SCREEN_HEIGHT,
-    width: '100%',
-    backgroundColor: colors.background,
-    position: 'relative',
-  },
-  defaultBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  defaultBackgroundEmoji: {
-    fontSize: 120,
-    opacity: 0.3,
-  },
-  content: {
-    position: 'absolute',
-    bottom: 100,
-    left: 20,
-    right: 20,
-  },
-  achievementName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 8,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 10,
-  },
-  caption: {
-    fontSize: 16,
-    color: '#fff',
-    marginBottom: 12,
-    lineHeight: 22,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
-  },
-  optionsButton: {
-    position: 'absolute',
-    right: 16,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  timestamp: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 6,
-  },
+  nameShadow: { ...textShadow, textShadowRadius: 10 },
+  captionShadow: { ...textShadow, textShadowRadius: 8 },
+  timestampShadow: { ...textShadow, textShadowRadius: 6 },
 });

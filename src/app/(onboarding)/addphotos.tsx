@@ -2,7 +2,7 @@ import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import MediaThumbnails from '@/components/MediaThumbnails';
 import { addAchievement, deleteAchievement, MediaItem } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';

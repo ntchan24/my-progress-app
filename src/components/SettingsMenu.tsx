@@ -1,4 +1,4 @@
-import { colors } from '@/styles/global';
+import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -29,7 +29,9 @@ export default function SettingsMenu() {
   return (
     <>
       <TouchableOpacity
-        style={[styles.menuButton, { top: buttonTop }]}
+        // Semi-transparent so the button stays readable over photos and videos
+        className='overlay-btn left-4 bg-background/60'
+        style={{ top: buttonTop }}
         onPress={() => setIsOpen(true)}
         accessibilityLabel='Open menu'
       >
@@ -43,17 +45,20 @@ export default function SettingsMenu() {
         onRequestClose={() => setIsOpen(false)}
       >
         {/* Tapping the dimmed area outside the panel closes the menu */}
-        <Pressable style={styles.backdrop} onPress={() => setIsOpen(false)}>
+        <Pressable className='flex-1 bg-black/40' onPress={() => setIsOpen(false)}>
           {/* A Pressable with no onPress keeps taps on the panel from closing it */}
-          <Pressable style={[styles.panel, { top: buttonTop + 52 }]}>
+          <Pressable
+            className='absolute left-4 min-w-[200px] py-2 rounded-2xl bg-surface'
+            style={[styles.shadow, { top: buttonTop + 52 }]}
+          >
             {MENU_ITEMS.map((item) => (
               <TouchableOpacity
                 key={item.label}
-                style={styles.item}
+                className='flex-row items-center gap-3 px-4 py-3.5'
                 onPress={() => handleSelect(item)}
               >
                 <Ionicons name={item.icon} size={20} color={colors.text} />
-                <Text style={styles.itemText}>{item.label}</Text>
+                <Text className='text-base text-text'>{item.label}</Text>
               </TouchableOpacity>
             ))}
           </Pressable>
@@ -63,44 +68,13 @@ export default function SettingsMenu() {
   );
 }
 
+// Shadows use StyleSheet because iOS and Android need different props
 const styles = StyleSheet.create({
-  menuButton: {
-    position: 'absolute',
-    left: 16,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    // Semi-transparent so the button stays readable over photos and videos
-    backgroundColor: 'rgba(26, 26, 46, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-  },
-  panel: {
-    position: 'absolute',
-    left: 16,
-    minWidth: 200,
-    paddingVertical: 8,
-    borderRadius: 16,
-    backgroundColor: colors.surface,
+  shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  itemText: {
-    fontSize: 16,
-    color: colors.text,
   },
 });

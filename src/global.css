@@ -4,7 +4,7 @@
 
 @import "nativewind/theme";
 
-/* Mirrors `colors` in src/styles/global.ts so converted screens look the same */
+/* Mirrors `colors` in src/constants/colors.ts (used for JS-only color props) */
 @theme {
   --color-background: #1a1a2e;
   --color-header: #242444;
@@ -65,4 +65,18 @@
 
 @utility btn-dashed__label {
   @apply text-primary text-sm font-semibold;
+}
+
+@utility screen__header {
+  @apply flex-row justify-between items-center;
+}
+
+/* Text field on a surface background */
+@utility input {
+  @apply bg-surface text-text p-4 rounded-[10px] text-base mt-4;
+}
+
+/* Round 44px icon button that floats over content */
+@utility overlay-btn {
+  @apply absolute w-11 h-11 rounded-full items-center justify-center;
 }
