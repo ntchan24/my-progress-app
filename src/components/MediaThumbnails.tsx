@@ -1,4 +1,3 @@
-import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import { MediaItem } from '@/storage/achievements';
 import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,10 +6,11 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type MediaThumbnailsProps = {
   media: MediaItem[];
+  maxMedia: number;
   onRemove: (index: number) => void;
 };
 
-export default function MediaThumbnails({ media, onRemove }: MediaThumbnailsProps) {
+export default function MediaThumbnails({ media, maxMedia, onRemove }: MediaThumbnailsProps) {
   if (media.length === 0) return null;
 
   return (
@@ -42,7 +42,7 @@ export default function MediaThumbnails({ media, onRemove }: MediaThumbnailsProp
           </View>
         ))}
       </ScrollView>
-      <Text className='type-footnote text-text-secondary mt-2 text-right'>{media.length}/{MAX_MEDIA_PER_POST} media items</Text>
+      <Text className='type-footnote text-text-secondary mt-2 text-right'>{media.length}/{maxMedia} media items</Text>
     </View>
   );
 }

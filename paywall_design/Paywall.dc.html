@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<title>Still — Paywall</title>
+<style>body{margin:0;background:#0A0A0A;color:#E8E8E8;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:#9C9C9C}a:hover{color:#E8E8E8}</style>
+</helmet>
+<section style="padding:48px;display:flex;flex-direction:column;gap:24px">
+<div style="font-size:15px;color:#9C9C9C">Paywall · 7-day free trial on every plan</div>
+<div id="options" style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
+
+<div id="1a" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px;align-items:center"><div style="height:24px;padding:0 10px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;font-size:13px;font-weight:700;display:flex;align-items:center">1a</div><div style="font-size:13px;color:#9C9C9C">Plan list</div></div>
+<div style="width:390px;height:844px;background:#000;border-radius:48px;border:1px solid #262626;overflow:hidden;display:flex;flex-direction:column;padding:56px 20px 28px">
+  <div style="display:flex;justify-content:space-between;align-items:center;height:44px">
+    <div style="font-size:15px;font-weight:600;color:#9C9C9C">Restore</div>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9C9C9C" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E;text-align:center;margin-top:12px">still premium</div>
+  <div style="font-size:28px;line-height:34px;font-weight:700;text-align:center;margin-top:8px;text-wrap:balance">Keep more of every day.</div>
+  <div style="display:flex;flex-direction:column;gap:14px;margin:28px 8px 0">
+    <sc-for list="{{ features }}" as="f" hint-placeholder-count="5">
+      <div style="display:flex;gap:14px;align-items:center;font-size:16px">
+        <div style="width:32px;height:32px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></div>
+        <div>{{ f }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="flex:1"></div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ plansA }}" as="p" hint-placeholder-count="3">
+      <div onClick="{{ p.onSelect }}" style="height:64px;border-radius:20px;background:#141414;border:1.5px solid {{ p.border }};padding:0 16px;display:flex;align-items:center;gap:14px;cursor:pointer;position:relative">
+        <div style="width:22px;height:22px;border-radius:999px;border:1.5px solid {{ p.ring }};display:flex;align-items:center;justify-content:center"><div style="width:12px;height:12px;border-radius:999px;background:{{ p.dot }}"></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:17px;font-weight:600">{{ p.name }}</div><div style="font-size:13px;color:#9C9C9C">{{ p.perMonth }}</div></div>
+        <div style="font-size:17px;font-weight:600">{{ p.price }}</div>
+        <sc-if value="{{ p.save }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:-10px;right:16px;height:20px;padding:0 8px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;font-size:11px;font-weight:700;display:flex;align-items:center">{{ p.save }}</div></sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div style="height:56px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin-top:16px">Start Free Trial</div>
+  <div style="font-size:13px;color:#9C9C9C;text-align:center;margin-top:10px">{{ termsA }}</div>
+  <div style="display:flex;justify-content:center;gap:16px;font-size:12px;margin-top:10px"><a href="#">Terms</a><a href="#">Privacy</a></div>
+</div>
+</div>
+
+<div id="1b" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px;align-items:center"><div style="height:24px;padding:0 10px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;font-size:13px;font-weight:700;display:flex;align-items:center">1b</div><div style="font-size:13px;color:#9C9C9C">Feature grid + plan columns</div></div>
+<div style="width:390px;height:844px;background:#000;border-radius:48px;border:1px solid #262626;overflow:hidden;display:flex;flex-direction:column;padding:56px 20px 28px">
+  <div style="display:flex;justify-content:flex-end;height:44px;align-items:center"><div style="width:36px;height:36px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9C9C9C" stroke-width="1.75" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div></div>
+  <div style="font-size:34px;line-height:41px;font-weight:700;margin-top:8px">still.<br>premium</div>
+  <div style="font-size:16px;line-height:22px;color:#9C9C9C;margin-top:8px">Try everything free for 7 days.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px">
+    <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="5">
+      <div style="background:#141414;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;grid-column:{{ t.span }}">
+        <div style="width:28px;height:28px;border-radius:999px;background:#2A2A2A"></div>
+        <div style="font-size:15px;font-weight:600;line-height:19px">{{ t.label }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="flex:1"></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <sc-for list="{{ plansB }}" as="p" hint-placeholder-count="3">
+      <div onClick="{{ p.onSelect }}" style="height:104px;border-radius:20px;background:{{ p.bg }};color:{{ p.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:background 150ms">
+        <div style="font-size:13px;font-weight:600">{{ p.name }}</div>
+        <div style="font-size:24px;font-weight:700">{{ p.price }}</div>
+        <div style="font-size:12px;color:{{ p.sub }}">{{ p.perMonth }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="height:56px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin-top:16px">Try Free for 7 Days</div>
+  <div style="font-size:13px;color:#9C9C9C;text-align:center;margin-top:10px">{{ termsB }}</div>
+  <div style="display:flex;justify-content:center;gap:16px;font-size:12px;margin-top:10px"><a href="#">Restore</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+</div>
+</div>
+
+<div id="1c" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px;align-items:center"><div style="height:24px;padding:0 10px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;font-size:13px;font-weight:700;display:flex;align-items:center">1c</div><div style="font-size:13px;color:#9C9C9C">Trial timeline + segmented plans</div></div>
+<div style="width:390px;height:844px;background:#000;border-radius:48px;border:1px solid #262626;overflow:hidden;display:flex;flex-direction:column;padding:56px 20px 28px">
+  <div style="display:flex;justify-content:space-between;align-items:center;height:44px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9C9C9C" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    <div style="font-size:15px;font-weight:600;color:#9C9C9C">Restore</div>
+  </div>
+  <div style="font-size:28px;line-height:34px;font-weight:700;text-align:center;margin-top:16px;text-wrap:balance">How your free trial works</div>
+  <div style="display:flex;flex-direction:column;margin:32px 8px 0">
+    <sc-for list="{{ timeline }}" as="s" hint-placeholder-count="3">
+      <div style="display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:16px">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div style="width:44px;height:44px;border-radius:999px;background:{{ s.bg }};color:{{ s.fg }};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">{{ s.mark }}</div>
+          <div style="width:2px;flex:1;min-height:20px;background:#2A2A2A;opacity:{{ s.line }}"></div>
+        </div>
+        <div style="padding:10px 0 24px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:17px;font-weight:600">{{ s.title }}</div>
+          <div style="font-size:15px;line-height:20px;color:#9C9C9C">{{ s.body }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="flex:1"></div>
+  <div style="height:44px;border-radius:999px;background:#141414;padding:4px;display:grid;grid-template-columns:repeat(3,1fr)">
+    <sc-for list="{{ plansC }}" as="p" hint-placeholder-count="3">
+      <div onClick="{{ p.onSelect }}" style="border-radius:999px;background:{{ p.segBg }};color:{{ p.segFg }};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer;transition:background 150ms">{{ p.name }}</div>
+    </sc-for>
+  </div>
+  <div style="font-size:15px;color:#9C9C9C;text-align:center;margin-top:16px">{{ summaryC }}</div>
+  <div style="height:56px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin-top:16px">Start My 7 Days Free</div>
+  <div style="font-size:13px;color:#9C9C9C;text-align:center;margin-top:10px">Cancel anytime in Settings.</div>
+  <div style="display:flex;justify-content:center;gap:16px;font-size:12px;margin-top:10px"><a href="#">Terms</a><a href="#">Privacy</a></div>
+</div>
+</div>
+
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { a: 2, b: 2, c: 2 };
+  plans(key) {
+    const P = [
+      { name: 'Monthly', price: '$4', perMonth: '$4.00 / month', bill: '$4 per month', save: '' },
+      { name: 'Quarterly', price: '$10', perMonth: '$3.33 / month', bill: '$10 every 3 months', save: 'Save 17%' },
+      { name: 'Yearly', price: '$25', perMonth: '$2.08 / month', bill: '$25 per year', save: 'Save 48%' },
+    ];
+    return P.map((p, i) => {
+      const on = this.state[key] === i;
+      return { ...p, on, onSelect: () => this.setState({ [key]: i }),
+        border: on ? '#D6D6D6' : '#141414', ring: on ? '#D6D6D6' : '#3A3A3A', dot: on ? '#D6D6D6' : 'transparent',
+        bg: on ? '#D6D6D6' : '#141414', fg: on ? '#0A0A0A' : '#E8E8E8', sub: on ? '#3A3A3A' : '#9C9C9C' };
+    });
+  }
+  renderVals() {
+    const terms = k => `7 days free, then ${this.plans(k)[this.state[k]].bill}. Cancel anytime.`;
+    return {
+      features: ['Up to 30 photos per post', 'Videos', 'Home screen widgets', 'Achievement badges', 'Reminders'],
+      tiles: [['Up to 30 photos per post','1 / -1'],['Videos','auto'],['Widgets','auto'],['Achievement badges','auto'],['Reminders','auto']].map(([label, span]) => ({ label, span })),
+      plansA: this.plans('a'), plansB: this.plans('b'), plansC: this.plans('c'),
+      termsA: terms('a'), termsB: terms('b'), termsC: terms('c'),
+      plansC: this.plans('c').map(p => ({ ...p, segBg: p.on ? '#D6D6D6' : 'transparent', segFg: p.on ? '#0A0A0A' : '#9C9C9C' })),
+      summaryC: (() => { const p = this.plans('c')[this.state.c]; return `${p.bill} · ${p.perMonth}${p.save ? ' · ' + p.save : ''}`; })(),
+      timeline: [
+        { mark: '1', title: 'Today', body: 'Unlock videos, widgets, badges, reminders and up to 30 photos per post.', bg: '#D6D6D6', fg: '#0A0A0A', line: 1 },
+        { mark: '5', title: 'Day 5', body: 'We\u2019ll remind you that your trial is ending.', bg: '#1E1E1E', fg: '#E8E8E8', line: 1 },
+        { mark: '7', title: 'Day 7', body: `You\u2019re charged ${this.plans('c')[this.state.c].bill}. Cancel before then and pay nothing.`, bg: '#1E1E1E', fg: '#E8E8E8', line: 0 },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

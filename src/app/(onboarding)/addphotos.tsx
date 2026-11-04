@@ -1,14 +1,16 @@
-import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import MediaThumbnails from '@/components/MediaThumbnails';
+import { colors } from '@/constants/colors';
+import { PLAN_LIMITS } from '@/constants/plans';
+import { usePlan } from '@/hooks/usePlan';
 import { addAchievement, deleteAchievement, MediaItem } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
-import { colors } from '@/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+
 
 export default function AddPhotosScreen(){
     const { goal, win } = useLocalSearchParams<{ goal: string; win: string }>();
@@ -18,6 +20,7 @@ export default function AddPhotosScreen(){
 
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [saving, setSaving] = useState(false);
+    const { limits } = usePlan();
 
     const handleContinue = async () => {
         setSaving(true);
@@ -44,8 +47,9 @@ export default function AddPhotosScreen(){
     };
 
 const pickFromLibrary = async () => {
-    if (media.length >= MAX_MEDIA_PER_POST) {
-      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
+    // No paywall mid-onboarding: the Pro pitch comes a few screens later
+    if (media.length >= limits.maxMediaPerPost) {
+      Alert.alert('One photo for now', `Pro lets you add up to ${PLAN_LIMITS.pro.maxMediaPerPost} photos and videos per post.`);
       return;
     }
 
@@ -61,21 +65,30 @@ const pickFromLibrary = async () => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
+      mediaTypes: limits.allowVideo ? ['images', 'videos'] : ['images'],
       allowsMultipleSelection: true,
       quality: 1,
       videoMaxDuration: 60,
-      selectionLimit: MAX_MEDIA_PER_POST - media.length, // Limit based on current count
+      selectionLimit: limits.maxMediaPerPost - media.length, // Limit based on current count
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      const newMedia: MediaItem[] = result.assets.map(asset => ({
-        uri: asset.uri,
-        type: asset.type === 'video' ? 'video' : 'image',
-      }));
+      const newMedia: MediaItem[] = result.assets
+        .map((asset): MediaItem => ({
+          uri: asset.uri,
+          type: asset.type === 'video' ? 'video' : 'image',
+        }))
+        // Some Android pickers ignore mediaTypes, so drop videos the plan doesn't allow
+        .filter((item) => limits.allowVideo || item.type !== 'video');
 
-      setMedia([...media, ...newMedia]);
+      // Some Android versions ignore selectionLimit, so trim anything over the limit
+      const room = limits.maxMediaPerPost - media.length;
+      setMedia([...media, ...newMedia.slice(0, room)]);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+      if (newMedia.length > room) {
+        Alert.alert('One photo for now', `Pro lets you add up to ${PLAN_LIMITS.pro.maxMediaPerPost} photos and videos per post.`);
+      }
     }
   };
 
@@ -101,7 +114,7 @@ const pickFromLibrary = async () => {
                     <Text className="btn-tonal__label">Choose from Library</Text>
                 </Pressable>
 
-                <MediaThumbnails media={media} onRemove={removeMedia} />
+                <MediaThumbnails media={media} maxMedia={limits.maxMediaPerPost} onRemove={removeMedia} />
             </ScrollView>
 
             <View className="flow__footer pt-4">

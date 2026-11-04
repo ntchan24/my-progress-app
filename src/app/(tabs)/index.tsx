@@ -8,6 +8,7 @@ import {
 } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
 import { colors } from '@/constants/colors';
+import { usePlan } from '@/hooks/usePlan';
 import { FeedItem, nextRound, orderFeed, toFeedItems } from '@/utils/feedOrder';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -28,6 +29,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const resetOnboarding = useOnboardingStore((s) => s.resetOnboarding);
+  const { limits } = usePlan();
   // Source list from the database
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   // Stops the empty state flashing on launch before the database has responded
@@ -79,7 +81,8 @@ export default function HomeScreen() {
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ['images', 'videos'],
+      // Video is a Pro feature, so free users get a photo-only camera
+      mediaTypes: limits.allowVideo ? ['images', 'videos'] : ['images'],
       quality: 1,
       videoMaxDuration: 60,
     });

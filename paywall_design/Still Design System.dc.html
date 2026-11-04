@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Still — iOS design system</title>
+<style>
+body{margin:0;background:#000;color:#E8E8E8;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#E8E8E8;text-decoration:underline}a:hover{color:#9C9C9C}
+*{box-sizing:border-box}
+</style>
+</helmet>
+<div style="max-width:1240px;margin:0 auto;padding:64px 32px 120px;display:flex;flex-direction:column;gap:88px">
+
+<header style="display:flex;flex-direction:column;gap:16px;max-width:720px">
+  <div style="font-size:34px;font-weight:700;letter-spacing:0.37px">still.</div>
+  <div style="font-size:17px;line-height:26px;color:#9C9C9C;text-wrap:pretty">An iOS design system for calm, journaling-style apps. Dark first, monochrome, solid fills only. Built for React Native; tokens ship as tokens.ts, tokens.json and Tokens.swift, with DESIGN.md as the spec for Claude Code.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+    <a href="tokens.ts" style="display:flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;border:1px solid #3A3A3A;color:#E8E8E8;text-decoration:none;font-size:15px;font-weight:600">tokens.ts</a>
+    <a href="tokens.json" style="display:flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;border:1px solid #3A3A3A;color:#E8E8E8;text-decoration:none;font-size:15px;font-weight:600">tokens.json</a>
+    <a href="Tokens.swift" style="display:flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;border:1px solid #3A3A3A;color:#E8E8E8;text-decoration:none;font-size:15px;font-weight:600">Tokens.swift</a>
+    <a href="DESIGN.md" style="display:flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;border:1px solid #3A3A3A;color:#E8E8E8;text-decoration:none;font-size:15px;font-weight:600">DESIGN.md</a>
+  </div>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">01 Color</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:24px">
+    <div style="background:#000;border:1px solid #262626;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div style="font-size:17px;font-weight:600">Dark · default</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px">
+        <sc-for list="{{ darkSwatches }}" as="s" hint-placeholder-count="11">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="height:56px;border-radius:12px;border:1px solid #262626;background:{{ s.hex }}"></div>
+            <div style="font-size:13px;font-weight:600">{{ s.name }}</div>
+            <div style="font-size:12px;color:#9C9C9C;font-family:ui-monospace,Menlo,monospace">{{ s.hex }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#FFFFFF;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px;color:#141414">
+      <div style="font-size:17px;font-weight:600">Light</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px">
+        <sc-for list="{{ lightSwatches }}" as="s" hint-placeholder-count="11">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="height:56px;border-radius:12px;border:1px solid #E4E4E4;background:{{ s.hex }}"></div>
+            <div style="font-size:13px;font-weight:600">{{ s.name }}</div>
+            <div style="font-size:12px;color:#5E5E5E;font-family:ui-monospace,Menlo,monospace">{{ s.hex }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:24px">
+    <div style="background:#141414;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:15px;font-weight:600">Status only</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9C9C9C"><div style="width:20px;height:20px;border-radius:999px;background:#E0605A"></div>danger</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9C9C9C"><div style="width:20px;height:20px;border-radius:999px;background:#5DB07E"></div>success</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#9C9C9C"><div style="width:20px;height:20px;border-radius:999px;background:#D9A441"></div>warning</div>
+      </div>
+      <div style="font-size:13px;line-height:18px;color:#9C9C9C">Labels and small marks only. Never fills, never decoration.</div>
+    </div>
+    <div style="background:#141414;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:15px;font-weight:600">Solid fills only</div>
+      <div style="font-size:13px;line-height:18px;color:#9C9C9C">No gradients in buttons, icons, illustrations or backgrounds. Elevation is a surface step (bg → surface → surfaceRaised → surfaceHigh), not a shadow.</div>
+    </div>
+    <div style="background:#141414;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:15px;font-weight:600">Accent: none</div>
+      <div style="font-size:13px;line-height:18px;color:#9C9C9C">Hierarchy comes from gray steps and weight. If an accent is added later, it gets one meaning and one solid hue.</div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">02 Typography · SF Pro</div>
+  <div style="background:#141414;border-radius:28px;padding:8px 24px">
+    <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="12">
+      <div style="display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr) minmax(0,120px);gap:16px;align-items:baseline;padding:16px 0;border-bottom:0.5px solid #262626">
+        <div style="font-size:13px;font-weight:600;color:#9C9C9C">{{ t.name }}</div>
+        <div style="{{ t.style }}">{{ t.sample }}</div>
+        <div style="font-size:12px;color:#6E6E6E;font-family:ui-monospace,Menlo,monospace;text-align:right">{{ t.spec }}</div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">03 Spacing &amp; radii</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:24px">
+    <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ spaces }}" as="s" hint-placeholder-count="9">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:64px;font-size:12px;color:#9C9C9C;font-family:ui-monospace,Menlo,monospace">space.{{ s.k }}</div>
+          <div style="height:12px;border-radius:3px;background:#D6D6D6;width:{{ s.w }}"></div>
+          <div style="font-size:12px;color:#6E6E6E">{{ s.v }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:#141414;border-radius:28px;padding:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+      <sc-for list="{{ radii }}" as="r" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+          <div style="width:100%;height:72px;background:#2A2A2A;border-radius:{{ r.px }}"></div>
+          <div style="font-size:13px;font-weight:600">{{ r.k }}</div>
+          <div style="font-size:12px;color:#9C9C9C">{{ r.use }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">04 Icons</div>
+  <div style="background:#141414;border-radius:28px;padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:center">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;color:#E8E8E8">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="5.5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="18.5" cy="12" r="1.5"></circle></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"></rect><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"></path></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8.5"></circle></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8.5"></circle></svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:21px;color:#9C9C9C">
+      <div><span style="color:#E8E8E8;font-weight:600">Line, 1.5pt stroke, 24pt.</span> 20pt in dense rows. Round caps and joins.</div>
+      <div><span style="color:#E8E8E8;font-weight:600">Filled</span> only for an active tab or selected state.</div>
+      <div><span style="color:#E8E8E8;font-weight:600">Source:</span> lucide-react-native (strokeWidth 1.5) or SF Symbols via expo-symbols. Illustrations are flat, solid grays.</div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">05 Buttons</div>
+  <div style="background:#141414;border-radius:28px;padding:32px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:32px">
+    <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+      <div style="font-size:13px;color:#9C9C9C">primary · lg 56 / md 48</div>
+      <div style="height:56px;width:100%;max-width:340px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer" style-active="transform:scale(0.97);opacity:0.7">I'm In</div>
+      <div style="height:48px;min-width:160px;padding:0 28px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer" style-active="transform:scale(0.97);opacity:0.7">Begin</div>
+      <div style="height:48px;min-width:160px;padding:0 28px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;opacity:0.4">Disabled</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+      <div style="font-size:13px;color:#9C9C9C">secondary · tonal · text · destructive</div>
+      <div style="height:48px;padding:0 28px;border-radius:999px;border:1px solid #3A3A3A;color:#E8E8E8;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer" style-active="transform:scale(0.97);opacity:0.7">Reflect</div>
+      <div style="height:48px;padding:0 28px;border-radius:999px;background:#1E1E1E;color:#E8E8E8;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer" style-active="transform:scale(0.97);opacity:0.7">Write It Out</div>
+      <div style="height:44px;display:flex;align-items:center;color:#9C9C9C;font-size:17px;font-weight:600;cursor:pointer">Skip</div>
+      <div style="height:48px;padding:0 28px;border-radius:999px;border:1px solid #3A3A3A;color:#E0605A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Delete Entry</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+      <div style="font-size:13px;color:#9C9C9C">icon button 44 · FAB 56</div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div style="width:44px;height:44px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></div>
+        <div style="width:44px;height:44px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></div>
+        <div style="width:44px;height:44px;border-radius:999px;border:1px solid #3A3A3A;color:#E8E8E8;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></div>
+        <div style="width:44px;height:44px;border-radius:999px;background:#1E1E1E;color:#E8E8E8;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5.5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="18.5" cy="12" r="1.5"></circle></svg></div>
+        <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#E8E8E8"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+      </div>
+      <div style="width:56px;height:56px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">06 Inputs &amp; forms</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:24px">
+    <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:#9C9C9C">ChoicePill · tap to select</div>
+      <div style="font-size:22px;line-height:28px;font-weight:700;text-align:center;margin:8px 0">How far do you want to go?</div>
+      <sc-for list="{{ choices }}" as="c" hint-placeholder-count="3">
+        <div onClick="{{ c.onSelect }}" style="height:56px;border-radius:999px;background:{{ c.bg }};color:{{ c.fg }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer;transition:background 150ms,color 150ms">{{ c.label }}</div>
+      </sc-for>
+      <div style="font-size:15px;color:#9C9C9C;text-align:center;margin-top:4px">You can change this anytime.</div>
+    </div>
+    <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:20px">
+      <div style="font-size:13px;color:#9C9C9C">TextField · SearchField · Toggle</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:13px;color:#9C9C9C">Name</div>
+        <input placeholder="What should we call you?" style="height:52px;border-radius:16px;background:#1E1E1E;border:1px solid transparent;padding:0 16px;color:#E8E8E8;font-size:17px;font-family:inherit;outline:none" style-focus="border-color:#3A3A3A"></input>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:13px;color:#9C9C9C">Email</div>
+        <div style="height:52px;border-radius:16px;background:#1E1E1E;border:1px solid #E0605A;padding:0 16px;display:flex;align-items:center;font-size:17px">hello@</div>
+        <div style="font-size:13px;color:#E0605A">Enter a full email address.</div>
+      </div>
+      <div style="height:40px;border-radius:999px;background:#1E1E1E;padding:0 14px;display:flex;align-items:center;gap:8px;color:#6E6E6E;font-size:17px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg>Search entries
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:17px">Daily reminder</div>
+        <div onClick="{{ toggle }}" style="width:51px;height:31px;border-radius:999px;background:{{ toggleTrack }};padding:2px;display:flex;justify-content:{{ toggleJustify }};cursor:pointer;transition:background 150ms">
+          <div style="width:27px;height:27px;border-radius:999px;background:{{ toggleKnob }}"></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#000;border:1px solid #262626;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:12px;min-height:320px">
+      <div style="font-size:13px;color:#9C9C9C">Editor · full screen</div>
+      <div style="display:flex;justify-content:flex-end;gap:16px;color:#9C9C9C">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5.5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="18.5" cy="12" r="1.5"></circle></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </div>
+      <div style="font-size:20px;line-height:26px;font-weight:700;text-wrap:pretty">What is one thing you can let go of today?</div>
+      <div style="font-size:17px;color:#6E6E6E;border-left:1.5px solid #E8E8E8;padding-left:2px">Start writing...</div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">07 Lists &amp; cells</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E;padding:0 16px">Practices</div>
+      <div style="background:#141414;border-radius:20px;overflow:hidden">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:16px;min-height:56px;padding:14px 16px;cursor:pointer;position:relative" style-active="background:#2A2A2A">
+            <div style="width:32px;height:32px;border-radius:999px;background:#1E1E1E;flex-shrink:0"></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+              <div style="font-size:17px;font-weight:600">{{ r.title }}</div>
+              <div style="font-size:15px;color:#9C9C9C">{{ r.sub }}</div>
+            </div>
+            <div style="font-size:15px;color:#9C9C9C">{{ r.value }}</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E6E6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+          </div>
+          <div style="height:0.5px;background:#262626;margin-left:64px"></div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#141414;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:0">
+      <div style="font-size:13px;color:#9C9C9C;margin-bottom:16px">Timeline step</div>
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:16px">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div style="width:44px;height:44px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#E8E8E8">{{ s.mark }}</div>
+            <div style="width:2px;flex:1;min-height:16px;background:#2A2A2A;opacity:{{ s.lineOpacity }}"></div>
+          </div>
+          <div style="padding:10px 0 20px;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:17px;font-weight:600;text-decoration:{{ s.deco }};color:{{ s.color }}">{{ s.title }}</div>
+            <div style="font-size:15px;color:#9C9C9C">{{ s.body }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">08 Cards</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:stretch">
+    <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;position:relative;min-height:400px">
+      <div style="position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;color:#9C9C9C"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5.5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="18.5" cy="12" r="1.5"></circle></svg></div>
+      <div style="flex:1"></div>
+      <div style="width:48px;height:48px;border-radius:999px;background:#2A2A2A"></div>
+      <div style="font-size:24px;line-height:30px;font-weight:700;text-wrap:balance">If you could spend one day anywhere, where would you go?</div>
+      <div style="flex:1"></div>
+      <div style="height:48px;padding:0 28px;border-radius:999px;border:1px solid #3A3A3A;display:flex;align-items:center;font-size:17px;font-weight:600">Write It Out</div>
+    </div>
+    <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:400px">
+      <div style="flex:1"></div>
+      <div style="font-size:24px;line-height:30px;font-weight:700;text-wrap:balance">Waste no more time arguing what a good person should be. Be one.</div>
+      <div style="font-size:13px;color:#9C9C9C">Marcus Aurelius</div>
+      <div style="flex:1"></div>
+      <div style="height:48px;padding:0 28px;border-radius:999px;border:1px solid #3A3A3A;display:flex;align-items:center;font-size:17px;font-weight:600">Journal About It</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+        <div style="display:flex;align-items:center;gap:8px;font-size:20px;font-weight:600">on beginnings.
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"></rect><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="2"></path></svg>
+        </div>
+        <div style="font-size:13px;color:#9C9C9C">Day 3 of 7</div>
+        <div style="font-size:15px;color:#9C9C9C;margin:10px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">What would you start if you knew it would work?</div>
+        <div style="height:48px;padding:0 28px;border-radius:999px;border:1px solid #3A3A3A;display:flex;align-items:center;font-size:17px;font-weight:600">Reflect</div>
+      </div>
+      <div style="display:flex;gap:16px">
+        <div style="width:150px;height:180px;background:#141414;border-radius:28px;display:flex;flex-direction:column;align-items:center;padding:20px 12px;gap:14px;text-align:center">
+          <div style="width:64px;height:64px;border-radius:999px;background:#1E1E1E"></div>
+          <div style="font-size:13px;font-weight:600;line-height:17px">Morning Intentions</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;justify-content:center">
+          <div style="height:28px;padding:0 12px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600"><div style="width:8px;height:8px;border-radius:999px;background:#E8E8E8"></div>12 days</div>
+          <div style="height:28px;padding:0 12px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;font-size:13px;font-weight:600">New</div>
+          <div style="height:28px;padding:0 12px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;font-size:13px;font-weight:600">Premium</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">09 Navigation</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:24px;align-items:start">
+    <div style="background:#000;border:1px solid #262626;border-radius:28px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px;margin-top:16px">
+        <div style="height:28px;padding:0 12px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600"><div style="width:8px;height:8px;border-radius:999px;background:#E8E8E8"></div>4</div>
+        <div style="font-size:20px;font-weight:600">good evening.</div>
+        <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><div style="width:28px;height:28px;border-radius:999px;background:#D6D6D6"></div></div>
+      </div>
+      <div style="padding:20px 20px 8px;font-size:34px;line-height:41px;font-weight:700">History</div>
+      <div style="padding:0 20px 20px;font-size:15px;color:#9C9C9C">Large-title variant uses display.</div>
+      <div style="height:120px"></div>
+      <div style="border-top:0.5px solid #262626;height:83px;display:grid;grid-template-columns:repeat(5,1fr);padding-top:6px">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <div onClick="{{ t.onSelect }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:{{ t.color }}">
+            <div style="width:24px;height:24px;border-radius:7px;border:1.5px solid currentColor;background:{{ t.fill }}"></div>
+            <div style="font-size:10px;font-weight:500">{{ t.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#9C9C9C">SegmentedControl</div>
+        <div style="height:40px;border-radius:999px;background:#000;padding:4px;display:grid;grid-template-columns:repeat(3,1fr)">
+          <sc-for list="{{ segments }}" as="s" hint-placeholder-count="3">
+            <div onClick="{{ s.onSelect }}" style="border-radius:999px;background:{{ s.bg }};color:{{ s.fg }};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer;transition:background 150ms">{{ s.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:#141414;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#9C9C9C">Flow controls · progress</div>
+        <div style="height:4px;border-radius:999px;background:#1E1E1E;overflow:hidden"><div style="width:40%;height:100%;background:#D6D6D6;border-radius:999px"></div></div>
+        <div style="display:flex;gap:6px;justify-content:center">
+          <div style="width:6px;height:6px;border-radius:999px;background:#D6D6D6"></div>
+          <div style="width:6px;height:6px;border-radius:999px;background:#2A2A2A"></div>
+          <div style="width:6px;height:6px;border-radius:999px;background:#2A2A2A"></div>
+          <div style="width:6px;height:6px;border-radius:999px;background:#2A2A2A"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="width:44px;height:44px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></div>
+          <div style="color:#9C9C9C;font-size:17px;font-weight:600">Skip</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">10 Sheets, alerts &amp; toasts</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:24px;align-items:stretch">
+    <div style="background:#0A0A0A;border:1px solid #262626;border-radius:28px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:420px">
+      <div style="background:#141414;border-radius:28px 28px 0 0;padding:10px 24px 32px;display:flex;flex-direction:column;gap:16px">
+        <div style="width:36px;height:5px;border-radius:3px;background:#2A2A2A;align-self:center"></div>
+        <div style="font-size:20px;font-weight:600;text-align:center;margin-top:8px">Add a practice</div>
+        <div style="font-size:15px;color:#9C9C9C;text-align:center">Pick one to add to your home screen.</div>
+        <div style="height:56px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Gratitude</div>
+        <div style="height:56px;border-radius:999px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Evening Review</div>
+        <div style="height:56px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Add</div>
+      </div>
+    </div>
+    <div style="background:#0A0A0A;border:1px solid #262626;border-radius:28px;min-height:420px;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="width:300px;max-width:100%;background:#1E1E1E;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;text-align:center">
+        <div style="font-size:17px;font-weight:600">Delete this entry?</div>
+        <div style="font-size:15px;line-height:20px;color:#9C9C9C;margin-bottom:12px">This can't be undone.</div>
+        <div style="height:48px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Keep Entry</div>
+        <div style="height:44px;display:flex;align-items:center;justify-content:center;color:#E0605A;font-size:17px;font-weight:600">Delete</div>
+      </div>
+    </div>
+    <div style="background:#0A0A0A;border:1px solid #262626;border-radius:28px;min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:16px;padding:24px">
+      <div style="font-size:15px;color:#9C9C9C;text-align:center">Toast · auto-dismiss 3s</div>
+      <div onClick="{{ fireToast }}" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #3A3A3A;display:flex;align-items:center;font-size:15px;font-weight:600;cursor:pointer">Show Toast</div>
+      <div style="flex:1"></div>
+      <div style="height:44px;padding:0 18px;border-radius:999px;background:#D6D6D6;color:#0A0A0A;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;opacity:{{ toastOpacity }};transform:{{ toastTransform }};transition:opacity 250ms,transform 250ms">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Entry saved
+      </div>
+    </div>
+  </div>
+</section>
+
+<sc-if value="{{ showLight }}" hint-placeholder-val="{{ true }}">
+<section style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:#6E6E6E">11 Light mode</div>
+  <div style="background:#FFFFFF;border-radius:28px;padding:32px 24px;color:#141414;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:24px;align-items:start">
+    <div style="background:#F3F3F3;border-radius:28px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+      <div style="font-size:24px;line-height:30px;font-weight:700">What are you grateful for today?</div>
+      <div style="height:48px;padding:0 28px;border-radius:999px;border:1px solid #CDCDCD;display:flex;align-items:center;font-size:17px;font-weight:600">Reflect</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="height:56px;border-radius:999px;background:#F3F3F3;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">5 days</div>
+      <div style="height:56px;border-radius:999px;background:#1A1A1A;color:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">10 days</div>
+      <div style="height:56px;border-radius:999px;background:#1A1A1A;color:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;margin-top:12px">Next</div>
+    </div>
+    <div style="background:#F3F3F3;border-radius:20px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:16px;padding:16px">
+        <div style="width:32px;height:32px;border-radius:999px;background:#EAEAEA"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:17px;font-weight:600">Evening Review</div><div style="font-size:15px;color:#5E5E5E">Daily at 9:00 PM</div></div>
+      </div>
+      <div style="height:0.5px;background:#E4E4E4;margin-left:64px"></div>
+      <div style="display:flex;align-items:center;gap:16px;padding:16px">
+        <div style="width:32px;height:32px;border-radius:999px;background:#EAEAEA"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:17px;font-weight:600">Gratitude</div><div style="font-size:15px;color:#5E5E5E">3 entries this week</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showLight&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { choice: 1, toggle: true, tab: 0, seg: 0, toast: false };
+  fireToast = () => {
+    clearTimeout(this._t);
+    this.setState({ toast: true });
+    this._t = setTimeout(() => this.setState({ toast: false }), 3000);
+  };
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() {
+    const s = this.state;
+    const sw = o => Object.entries(o).map(([name, hex]) => ({ name, hex }));
+    const dark = { bg:'#000000', surface:'#141414', surfaceRaised:'#1E1E1E', surfaceHigh:'#2A2A2A', border:'#262626', borderStrong:'#3A3A3A', textPrimary:'#E8E8E8', textSecondary:'#9C9C9C', textTertiary:'#6E6E6E', inverse:'#D6D6D6', onInverse:'#0A0A0A' };
+    const light = { bg:'#FFFFFF', surface:'#F3F3F3', surfaceRaised:'#EAEAEA', surfaceHigh:'#DEDEDE', border:'#E4E4E4', borderStrong:'#CDCDCD', textPrimary:'#141414', textSecondary:'#5E5E5E', textTertiary:'#8A8A8A', inverse:'#1A1A1A', onInverse:'#F2F2F2' };
+    const T = (name, size, lh, w, ls, sample, extra = '') => ({ name, sample, spec: `${size}/${lh} · ${w}`, style: `font-size:${size}px;line-height:${lh}px;font-weight:${w};letter-spacing:${ls}px;${extra}` });
+    const typeScale = [
+      T('display', 34, 41, 700, 0.37, 'good afternoon.'),
+      T('title1', 28, 34, 700, 0.36, 'Say hello to a calmer mind.'),
+      T('title2', 22, 28, 700, 0.35, 'How old are you?'),
+      T('title3', 20, 25, 600, 0.38, 'Weekly theme'),
+      T('prompt', 24, 30, 700, 0, 'Where would you go?'),
+      T('headline', 17, 22, 600, -0.41, 'Evening Review'),
+      T('body', 17, 22, 400, -0.41, 'Reflect on your day in the evening.'),
+      T('callout', 16, 21, 400, -0.32, 'Customization and all exercises.'),
+      T('subhead', 15, 20, 400, -0.24, 'Your choices won\u2019t limit access.', 'color:#9C9C9C;'),
+      T('footnote', 13, 18, 400, -0.08, 'Day 3 of 7', 'color:#9C9C9C;'),
+      T('caption', 12, 16, 400, 0, 'Seneca', 'color:#9C9C9C;'),
+      T('overline', 12, 16, 600, 1.4, 'Your practices', 'text-transform:uppercase;color:#6E6E6E;'),
+    ];
+    const spaces = [[1,4],[2,8],[3,12],[4,16],[5,20],[6,24],[8,32],[10,40],[14,56]].map(([k,v]) => ({ k, v, w: v * 4 + 'px' }));
+    const radii = [['xs',8,'chips, thumbs'],['sm',12,'swatches'],['md',16,'inputs'],['lg',20,'lists, alerts'],['xl',28,'cards, sheets'],['pill',999,'buttons, choices']].map(([k,px,use]) => ({ k: `${k} · ${px}`, px: Math.min(px, 36) + 'px', use }));
+    const choices = ['5 days','10 days','30 days'].map((label, i) => ({ label, bg: s.choice === i ? '#D6D6D6' : '#1E1E1E', fg: s.choice === i ? '#0A0A0A' : '#E8E8E8', onSelect: () => this.setState({ choice: i }) }));
+    const rows = [
+      { title: 'Morning Intentions', sub: 'Daily at 7:30 AM', value: 'On' },
+      { title: 'Evening Review', sub: 'Daily at 9:00 PM', value: 'On' },
+      { title: 'Gratitude', sub: '3 entries this week', value: '' },
+      { title: 'Add New', sub: 'Browse 50+ practices', value: '' },
+    ];
+    const steps = [
+      { mark: '\u2713', title: 'Create your profile', body: 'Done.', deco: 'line-through', color: '#9C9C9C', lineOpacity: 1 },
+      { mark: '1', title: 'Today: first check-in', body: 'Two minutes, morning or evening.', deco: 'none', color: '#E8E8E8', lineOpacity: 1 },
+      { mark: '7', title: 'Day 7: weekly review', body: 'See patterns in your entries.', deco: 'none', color: '#E8E8E8', lineOpacity: 0 },
+    ];
+    const tabs = ['Home','Quotes','Explore','History','Trends'].map((label, i) => ({ label, color: s.tab === i ? '#E8E8E8' : '#6E6E6E', fill: s.tab === i ? '#E8E8E8' : 'transparent', onSelect: () => this.setState({ tab: i }) }));
+    const segments = ['Week','Month','Year'].map((label, i) => ({ label, bg: s.seg === i ? '#D6D6D6' : 'transparent', fg: s.seg === i ? '#0A0A0A' : '#9C9C9C', onSelect: () => this.setState({ seg: i }) }));
+    return {
+      darkSwatches: sw(dark), lightSwatches: sw(light), typeScale, spaces, radii, choices, rows, steps, tabs, segments,
+      toggle: () => this.setState({ toggle: !s.toggle }),
+      toggleTrack: s.toggle ? '#D6D6D6' : '#2A2A2A', toggleKnob: s.toggle ? '#0A0A0A' : '#9C9C9C', toggleJustify: s.toggle ? 'flex-end' : 'flex-start',
+      fireToast: this.fireToast,
+      toastOpacity: s.toast ? 1 : 0, toastTransform: s.toast ? 'translateY(0)' : 'translateY(12px)',
+      showLight: this.props.showLight ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

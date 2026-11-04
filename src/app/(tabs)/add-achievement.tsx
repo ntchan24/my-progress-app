@@ -1,7 +1,7 @@
-import { MAX_MEDIA_PER_POST } from '@/constants/media';
 import MediaThumbnails from '@/components/MediaThumbnails';
 import { addAchievement, MediaItem } from '@/storage/achievements';
 import { colors } from '@/constants/colors';
+import { usePlan } from '@/hooks/usePlan';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
@@ -20,10 +20,21 @@ export default function AddAchievementScreen() {
   const [name, setName] = useState('');
   const [caption, setCaption] = useState('');
   const [media, setMedia] = useState<MediaItem[]>([]);
+  const { isPro, limits } = usePlan();
 
-  const takePhoto = async () => {
-    if (media.length >= MAX_MEDIA_PER_POST) {
-      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
+  // Free users are invited to upgrade; Pro users have hit the real cap
+  const handleLimitReached = () => {
+    if (!isPro) {
+      router.push('/paywall');
+      return;
+    }
+    Alert.alert('Limit Reached', `You can only add up to ${limits.maxMediaPerPost} media items.`);
+  };
+
+  // `current` is passed in by "Add Another" so it sees the item just added
+  const takePhoto = async (current: MediaItem[] = media) => {
+    if (current.length >= limits.maxMediaPerPost) {
+      handleLimitReached();
       return;
     }
 
@@ -45,24 +56,33 @@ export default function AddAchievementScreen() {
 
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
-      setMedia([...media, { uri: asset.uri, type: 'image' }]);
+      const next: MediaItem[] = [...current, { uri: asset.uri, type: 'image' }];
+      setMedia(next);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-      // Ask if user wants to add more
+      // Only offer another photo if there's room for one
+      if (next.length >= limits.maxMediaPerPost) return;
+
       Alert.alert(
         'Photo Added',
         'Would you like to add another photo?',
         [
           { text: 'Done', style: 'cancel' },
-          { text: 'Add Another', onPress: takePhoto },
+          { text: 'Add Another', onPress: () => takePhoto(next) },
         ]
       );
     }
   };
 
-  const recordVideo = async () => {
-    if (media.length >= MAX_MEDIA_PER_POST) {
-      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
+  // `current` is passed in by "Add Another" so it sees the item just added
+  const recordVideo = async (current: MediaItem[] = media) => {
+    if (!limits.allowVideo) {
+      router.push('/paywall');
+      return;
+    }
+
+    if (current.length >= limits.maxMediaPerPost) {
+      handleLimitReached();
       return;
     }
 
@@ -84,24 +104,27 @@ export default function AddAchievementScreen() {
 
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
-      setMedia([...media, { uri: asset.uri, type: 'video' }]);
+      const next: MediaItem[] = [...current, { uri: asset.uri, type: 'video' }];
+      setMedia(next);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-      // Ask if user wants to add more
+      // Only offer another video if there's room for one
+      if (next.length >= limits.maxMediaPerPost) return;
+
       Alert.alert(
         'Video Added',
         'Would you like to add another video?',
         [
           { text: 'Done', style: 'cancel' },
-          { text: 'Add Another', onPress: recordVideo },
+          { text: 'Add Another', onPress: () => recordVideo(next) },
         ]
       );
     }
   };
 
   const pickFromLibrary = async () => {
-    if (media.length >= MAX_MEDIA_PER_POST) {
-      Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items.`);
+    if (media.length >= limits.maxMediaPerPost) {
+      handleLimitReached();
       return;
     }
 
@@ -117,27 +140,28 @@ export default function AddAchievementScreen() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
+      mediaTypes: limits.allowVideo ? ['images', 'videos'] : ['images'],
       allowsMultipleSelection: true,
       quality: 1,
       videoMaxDuration: 60,
-      selectionLimit: MAX_MEDIA_PER_POST - media.length, // Limit based on current count
+      selectionLimit: limits.maxMediaPerPost - media.length, // Limit based on current count
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      const newMedia: MediaItem[] = result.assets.map(asset => ({
-        uri: asset.uri,
-        type: asset.type === 'video' ? 'video' : 'image',
-      }));
+      const newMedia: MediaItem[] = result.assets
+        .map((asset): MediaItem => ({
+          uri: asset.uri,
+          type: asset.type === 'video' ? 'video' : 'image',
+        }))
+        // Some Android pickers ignore mediaTypes, so drop videos the plan doesn't allow
+        .filter((item) => limits.allowVideo || item.type !== 'video');
 
-      const totalCount = media.length + newMedia.length;
-      if (totalCount > MAX_MEDIA_PER_POST) {
-        Alert.alert('Limit Reached', `You can only add up to ${MAX_MEDIA_PER_POST} media items total.`);
-        return;
-      }
-
-      setMedia([...media, ...newMedia]);
+      // Some Android versions ignore selectionLimit, so keep what fits, then explain
+      const room = limits.maxMediaPerPost - media.length;
+      setMedia([...media, ...newMedia.slice(0, room)]);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+      if (newMedia.length > room) handleLimitReached();
     }
   };
 
@@ -148,11 +172,11 @@ export default function AddAchievementScreen() {
       [
         {
           text: 'Take Photo',
-          onPress: takePhoto,
+          onPress: () => takePhoto(),
         },
         {
           text: 'Record Video',
-          onPress: recordVideo,
+          onPress: () => recordVideo(),
         },
         {
           text: 'Cancel',
@@ -207,7 +231,7 @@ export default function AddAchievementScreen() {
         </Pressable>
       </View>
 
-      <MediaThumbnails media={media} onRemove={removeMedia} />
+      <MediaThumbnails media={media} maxMedia={limits.maxMediaPerPost} onRemove={removeMedia} />
 
       <View className='field'>
         <Text className='field__label'>Name</Text>
