@@ -1,19 +1,18 @@
-import MediaThumbnails from '@/components/MediaThumbnails';
 import { colors } from '@/constants/colors';
-import { PLAN_LIMITS } from '@/constants/plans';
 import { usePlan } from '@/hooks/usePlan';
 import { addAchievement, deleteAchievement, MediaItem } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 
 export default function AddPhotosScreen(){
-    const { goal, win } = useLocalSearchParams<{ goal: string; win: string }>();
+    const { win } = useLocalSearchParams<{ win: string}>();
     const router = useRouter();
     const firstPost = useOnboardingStore((state) => state.firstPost);
     const setFirstPost = useOnboardingStore((state) => state.setFirstPost);
@@ -21,6 +20,8 @@ export default function AddPhotosScreen(){
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [saving, setSaving] = useState(false);
     const { limits } = usePlan();
+    // Onboarding posts hold a single photo; picking again replaces it
+    const photo = media[0];
 
     const handleContinue = async () => {
         setSaving(true);
@@ -32,7 +33,6 @@ export default function AddPhotosScreen(){
 
             const post = await addAchievement({
                 name: win,
-                caption: goal,
                 media: media.length > 0 ? media : undefined,
             });
 
@@ -47,12 +47,6 @@ export default function AddPhotosScreen(){
     };
 
 const pickFromLibrary = async () => {
-    // No paywall mid-onboarding: the Pro pitch comes a few screens later
-    if (media.length >= limits.maxMediaPerPost) {
-      Alert.alert('One photo for now', `Pro lets you add up to ${PLAN_LIMITS.pro.maxMediaPerPost} photos and videos per post.`);
-      return;
-    }
-
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -66,56 +60,56 @@ const pickFromLibrary = async () => {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: limits.allowVideo ? ['images', 'videos'] : ['images'],
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       quality: 1,
       videoMaxDuration: 60,
-      selectionLimit: limits.maxMediaPerPost - media.length, // Limit based on current count
     });
 
-    if (!result.canceled && result.assets.length > 0) {
-      const newMedia: MediaItem[] = result.assets
-        .map((asset): MediaItem => ({
-          uri: asset.uri,
-          type: asset.type === 'video' ? 'video' : 'image',
-        }))
-        // Some Android pickers ignore mediaTypes, so drop videos the plan doesn't allow
-        .filter((item) => limits.allowVideo || item.type !== 'video');
+    const asset = result.canceled ? undefined : result.assets[0];
+    if (!asset) return;
 
-      // Some Android versions ignore selectionLimit, so trim anything over the limit
-      const room = limits.maxMediaPerPost - media.length;
-      setMedia([...media, ...newMedia.slice(0, room)]);
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const item: MediaItem = {
+      uri: asset.uri,
+      type: asset.type === 'video' ? 'video' : 'image',
+    };
+    // Some Android pickers ignore mediaTypes, so drop videos the plan doesn't allow
+    if (item.type === 'video' && !limits.allowVideo) return;
 
-      if (newMedia.length > room) {
-        Alert.alert('One photo for now', `Pro lets you add up to ${PLAN_LIMITS.pro.maxMediaPerPost} photos and videos per post.`);
-      }
-    }
+    setMedia([item]);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const removeMedia = (index: number) => {
-    setMedia(media.filter((_, i) => i !== index));
+  const removePhoto = () => {
+    setMedia([]);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
     return (
         <View className="flow">
-            <ScrollView className="flex-1" contentContainerStyle={{ gap: 12 }}>
+            <View className="flow__body">
                 <Text className="screen__title">Add photos to your post</Text>
                 <Text className="type-subhead text-text-secondary">{"Don't worry, everything stays on your device and is never shared with us."}</Text>
 
-                {/* Preview of the goal and win passed via route params */}
-                <View className="card mt-5 gap-1">
-                    <Text className="type-title3 text-text-primary">{win}</Text>
-                    <Text className="type-subhead text-text-secondary">{goal}</Text>
-                </View>
-
                 <Pressable onPress={pickFromLibrary} className="btn-tonal mt-2">
                     <Ionicons name="images-outline" size={20} color={colors.textPrimary} />
-                    <Text className="btn-tonal__label">Choose from Library</Text>
+                    <Text className="btn-tonal__label">{photo ? 'Change Photo' : 'Choose from Library'}</Text>
                 </Pressable>
 
-                <MediaThumbnails media={media} maxMedia={limits.maxMediaPerPost} onRemove={removeMedia} />
-            </ScrollView>
+                {/* The photo fills whatever height is left, so the screen never scrolls */}
+                {photo && (
+                    <View className="flex-1 mt-2">
+                        <Image source={{ uri: photo.uri }} style={styles.preview} contentFit="cover" />
+                        {photo.type === 'video' && (
+                            <View className="absolute inset-0 items-center justify-center">
+                                <Ionicons name="play" size={40} color={colors.textPrimary} />
+                            </View>
+                        )}
+                        <Pressable className="overlay-btn top-3 right-3" onPress={removePhoto} accessibilityLabel="Remove photo">
+                            <Ionicons name="close" size={20} color={colors.textPrimary} />
+                        </Pressable>
+                    </View>
+                )}
+            </View>
 
             <View className="flow__footer pt-4">
                 <Pressable
@@ -129,3 +123,13 @@ const pickFromLibrary = async () => {
         </View>
     )
 }
+
+// expo-image's Image doesn't support className, so it keeps a StyleSheet
+const styles = StyleSheet.create({
+    preview: {
+        flex: 1,
+        width: '100%',
+        borderRadius: 20,
+        backgroundColor: colors.surfaceRaised,
+    },
+});

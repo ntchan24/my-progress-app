@@ -258,3 +258,61 @@
 @utility fab {
   @apply absolute right-5 bottom-6 size-14 rounded-full bg-inverse items-center justify-center active:opacity-70 active:scale-[0.97];
 }
+
+/* Toast: pill pinned near the bottom of the screen */
+@utility toast {
+  @apply absolute left-5 right-5 bottom-12 items-center;
+}
+
+@utility toast__pill {
+  @apply min-h-11 px-5 py-3 rounded-full bg-inverse items-center justify-center;
+}
+
+@utility toast__label {
+  @apply type-subhead text-on-inverse;
+}
+
+/* Paywall */
+@utility paywall-feature {
+  @apply flex-row items-center gap-3.5;
+}
+
+@utility paywall-feature__icon {
+  @apply size-8 rounded-full bg-surface-raised items-center justify-center;
+}
+
+@utility paywall-feature__label {
+  @apply type-callout text-text-primary;
+}
+
+@utility paywall-plan {
+  @apply h-16 px-4 rounded-lg bg-surface border-[1.5px] border-surface flex-row items-center gap-3.5 active:opacity-70;
+}
+
+@utility paywall-plan--selected {
+  @apply border-inverse;
+}
+
+@utility paywall-plan__radio {
+  @apply size-[22px] rounded-full border-[1.5px] border-border-strong items-center justify-center;
+}
+
+@utility paywall-plan__radio--selected {
+  @apply border-inverse;
+}
+
+@utility paywall-plan__dot {
+  @apply size-3 rounded-full bg-inverse;
+}
+
+@utility paywall-plan__badge {
+  @apply absolute -top-2.5 right-4 h-5 px-2 rounded-full bg-inverse items-center justify-center;
+}
+
+@utility paywall-plan__badge-label {
+  @apply text-[11px] font-bold text-on-inverse;
+}
+
+@utility paywall-link {
+  @apply text-xs text-text-secondary underline;
+}

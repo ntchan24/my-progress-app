@@ -7,6 +7,7 @@ import {
   markAchievementSeen,
 } from '@/storage/achievements';
 import { useOnboardingStore } from '@/store/onboarding';
+import { useSubscriptionStore } from '@/store/subscription';
 import { colors } from '@/constants/colors';
 import { usePlan } from '@/hooks/usePlan';
 import { FeedItem, nextRound, orderFeed, toFeedItems } from '@/utils/feedOrder';
@@ -29,6 +30,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const resetOnboarding = useOnboardingStore((s) => s.resetOnboarding);
+  const setIsPro = useSubscriptionStore((s) => s.setIsPro);
   const { limits } = usePlan();
   // Source list from the database
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -126,9 +128,15 @@ export default function HomeScreen() {
     </Pressable>
   );
 
+  // Like a fresh install: back through onboarding as a Free user
+  const handleDevReset = () => {
+    setIsPro(false);
+    resetOnboarding();
+  };
+
   // TEMP (dev only): sends you back through onboarding. Remove when done testing it.
   const devResetButton = __DEV__ ? (
-    <Pressable className='chip absolute top-[60px] right-4 active:opacity-70' onPress={resetOnboarding}>
+    <Pressable className='chip absolute top-[60px] right-4 active:opacity-70' onPress={handleDevReset}>
       <Text className='chip__label'>Reset Onboarding</Text>
     </Pressable>
   ) : null;

@@ -1,30 +1,27 @@
 import { colors } from '@/constants/colors';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
-// Read the goal from the previous screen, take a win, and pass both on to the add photos screen
+// Take a win from the user and pass it on to the add photos screen
 export default function WinExampleInputScreen() {
-    const { goal } = useLocalSearchParams<{ goal: string }>();
     const [win, setWin] = useState('');
     const router = useRouter();
     // Blank wins would save an untitled post, so wait for real text
     const canSubmit = win.trim().length > 0;
 
     const goToAddPhotosScreen = () => {
-        router.push({ pathname: '/addphotos', params: { goal, win: win.trim() } });
+        router.push({ pathname: '/addphotos', params: { win: win.trim() } });
     };
 
     return (
         <View className="flow">
             <View className="flow__body">
-                <Text className="type-footnote text-text-secondary">{goal}</Text>
-
                 <TextInput
                     className="screen__input"
                     onChangeText={setWin}
                     value={win}
-                    placeholder="Enter a win"
+                    placeholder="What's something you did this week to progress towards a goal? It could be anything."
                     placeholderTextColor={colors.textTertiary}
                     selectionColor={colors.textPrimary}
                     autoFocus

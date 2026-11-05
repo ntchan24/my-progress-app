@@ -1,6 +1,7 @@
 import '../global.css';
 import { initDatabase } from '@/storage/db';
 import { useOnboardingStore } from '@/store/onboarding';
+import Toast from '@/components/Toast';
 import { colors } from '@/constants/colors';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -49,10 +50,11 @@ export default function RootLayout() {
             headerShadowVisible: false,
           }}
         />
-        <Stack.Screen name='paywall' options={{ presentation: 'modal' }} />
+        <Stack.Screen name='paywall' options={{ presentation: 'fullScreenModal' }} />
         </Stack.Protected>
 
       </Stack>
+      <Toast />
     </GestureHandlerRootView>
   );
 }

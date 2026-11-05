@@ -20,7 +20,6 @@ export default function ShowMockupScreen() {
                     )}
                     <View className="absolute left-5 right-5 bottom-6 gap-1" pointerEvents="none">
                         <Text className="type-title2 text-white">{firstPost?.name}</Text>
-                        <Text className="type-subhead text-white/80">{firstPost?.caption}</Text>
                     </View>
                 </View>
             </View>
